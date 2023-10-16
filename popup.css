@@ -1,0 +1,30 @@
+body {
+  background-color: #282c34;
+  color: #abb2bf;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  padding: 10px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.speed-button {
+  background-color: #444;
+  color: #abb2bf;
+  width: 3.8em;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.speed-button.selected {
+  background-color: #4d9ad8;
+  color: #fff;
+}
