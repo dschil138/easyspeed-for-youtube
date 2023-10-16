@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Youtube 2x Click",
   "version": "2.0",
+  "description": "Click and hold anywhere on a Youtube video to make it play at 2X speed while the click is held.",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
     {

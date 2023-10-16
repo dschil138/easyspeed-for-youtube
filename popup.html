@@ -6,13 +6,31 @@
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
+  <h2>YouTube 2x Click Settings</h2>
   <div class="container">
-    <p>Playback Speed During Held Click:</p>
+    <div class="left-button-group">
+    <p>Drag Left Speed:<br></p>
+      <button class="left-speed-button" min-data-speed="1.25">1.25x</button>
+      <button class="left-speed-button" min-data-speed="1.5">1.5x</button>
+      <button class="left-speed-button" min-data-speed="2">2x</button>
+      <button class="left-speed-button" min-data-speed="2.5">2.5x</button>
+      <button class="left-speed-button" min-data-speed="3">3x</button>
+    </div>
     <div class="button-group">
+    <p>Held Click Speed:</p>
+    <button class="speed-button" data-speed="1.25">1.25x</button>
       <button class="speed-button" data-speed="1.5">1.5x</button>
       <button class="speed-button" data-speed="2">2x</button>
       <button class="speed-button" data-speed="2.5">2.5x</button>
       <button class="speed-button" data-speed="3">3x</button>
+    </div>
+    <div class="right-button-group">
+    <p>Drag Right Speed:</p>
+    <button class="right-speed-button" max-data-speed="1.25">1.25x</button>
+      <button class="right-speed-button" max-data-speed="1.5">1.5x</button>
+      <button class="right-speed-button" max-data-speed="2">2x</button>
+      <button class="right-speed-button" max-data-speed="2.5">2.5x</button>
+      <button class="right-speed-button" max-data-speed="3">3x</button>
     </div>
   </div>
   <script src="popup.js"></script>

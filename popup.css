@@ -3,28 +3,41 @@ body {
   color: #abb2bf;
   font-family: Arial, sans-serif;
 }
+h2, p {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
 
 .container {
+  display: flex;
+  flex-direction: row;
   padding: 10px;
 }
 
-.button-group {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
+.button-group, .left-speed-button-group, .right-speed-button-group {
+  display: row;
+  flex-direction: column;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
-.speed-button {
+.speed-button, .right-speed-button, .left-speed-button {
   background-color: #444;
   color: #abb2bf;
   width: 3.8em;
   border: none;
   border-radius: 4px;
   padding: 10px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  margin: 10px;
+  margin-top: 4px;
+  margin-bottom: 4px;
   cursor: pointer;
 }
 
-.speed-button.selected {
+.speed-button.selected, .right-speed-button.selected, .left-speed-button.selected {
   background-color: #4d9ad8;
   color: #fff;
 }
