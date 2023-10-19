@@ -75,15 +75,9 @@ function init() {
       if (longPressFlag) {
         longPressFlag = false;
     
-        // Fix auto pause by immediately hitting play with spacebar
         setTimeout(() => {
-          const spaceBarEvent = new KeyboardEvent('keydown', {
-            bubbles: true,
-            cancelable: true,
-            keyCode: 32
-          });
-          document.dispatchEvent(spaceBarEvent);
-        }, 10); //10 ms
+          // prevents odd double pause/play behavior
+        }, 10);
       }
     }, true);
     

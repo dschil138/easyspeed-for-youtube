@@ -22,8 +22,23 @@ h2, p {
   padding-left: 15px;
 }
 
-.speed-button, .right-speed-button, .left-speed-button {
-  background-color: #444;
+.speed-button {
+  background-color: #373737;
+  color: #6a6e74;
+  width: 3.8em;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  padding-top: 7px;
+  padding-bottom: 6px;
+  margin: 10px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.right-speed-button, .left-speed-button {
+  background-color: #414141;
   color: #abb2bf;
   width: 3.8em;
   border: none;
@@ -37,7 +52,22 @@ h2, p {
   cursor: pointer;
 }
 
-.speed-button.selected, .right-speed-button.selected, .left-speed-button.selected {
+.speed-button.selected {
+  background-color: #465765;
+  color: #c4c7cb;
+}
+
+.right-speed-button.selected, .left-speed-button.selected {
   background-color: #4d9ad8;
   color: #fff;
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
 }

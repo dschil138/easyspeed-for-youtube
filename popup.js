@@ -1,17 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
   const leftButtons = document.querySelectorAll('.left-speed-button');
-  const mainButtons = document.querySelectorAll('.speed-button');
+  // const mainButtons = document.querySelectorAll('.speed-button');
   const rightButtons = document.querySelectorAll('.right-speed-button');
 
   // Load any previously saved settings
   chrome.storage.sync.get(['minSpeed', 'speed', 'maxSpeed'], function(data) {
     const minSpeed = parseFloat(data.minSpeed) || 1.5;
-    const speed = parseFloat(data.speed) || 2;
+    // const speed = parseFloat(data.speed) || 2;
     const maxSpeed = parseFloat(data.maxSpeed) || 3;
     document.querySelector(`[min-data-speed="${minSpeed}"]`).classList.add('selected');
-    document.querySelector(`[data-speed="${speed}"]`).classList.add('selected');
+    // document.querySelector(`[data-speed="${speed}"]`).classList.add('selected');
     document.querySelector(`[max-data-speed="${maxSpeed}"]`).classList.add('selected');
   });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const buttons = document.querySelectorAll(".speed-button");
+    
+    buttons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            const tooltip = this.querySelector(".tooltip");
+            tooltip.style.display = tooltip.style.display === "inline-block" ? "none" : "inline-block";
+        });
+    });
+});
+
 
 
 
@@ -28,16 +40,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  mainButtons.forEach((button) => {
-    button.addEventListener('click', function() {
-      const speed = this.getAttribute('data-speed');
+  // mainButtons.forEach((button) => {
+  //   button.addEventListener('click', function() {
+  //     const speed = this.getAttribute('data-speed');
 
-      mainButtons.forEach((btn) => btn.classList.remove('selected'));
-      this.classList.add('selected');
+  //     mainButtons.forEach((btn) => btn.classList.remove('selected'));
+  //     this.classList.add('selected');
 
-      chrome.storage.sync.set({speed: speed});
-    });
-  });
+  //     chrome.storage.sync.set({speed: speed});
+  //   });
+  // });
 
   rightButtons.forEach((button) => {
     button.addEventListener('click', function() {
