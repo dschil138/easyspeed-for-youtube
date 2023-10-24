@@ -8,6 +8,10 @@ let initialX;
 let minPlaybackSpeed;
 let playbackSpeed;
 let maxPlaybackSpeed;
+let fullMaxPlaybackSpeed = 5;
+let fullMinPlaybackSpeed = 1.1;
+let tier1 = 42;
+let tier2 = 134;
 
 
 function init() {
@@ -51,6 +55,8 @@ function init() {
     
     video.parentElement.appendChild(indicator);
 
+
+    // Mouse Down
     video.addEventListener('mousedown', (e) => {
       initialX = e.clientX;
 
@@ -66,9 +72,10 @@ function init() {
         }, 250);
     }, true);
 
+    // Mouse Up
     video.addEventListener('mouseup', (e) => {
       clearTimeout(longPressTimer);
-      video.playbackRate = originalSpeed;
+      // video.playbackRate = originalSpeed;
       indicator.style.display = 'none';
       video.removeEventListener('mousemove', handleMouseMove, true);
     
@@ -80,15 +87,8 @@ function init() {
         }, 10);
       }
     }, true);
-    
 
-    video.addEventListener('pause', (e) => {
-      if (longPressFlag) {
-        video.play();  
-      }
-    }, true);
   } // End of if statement
-
 
 } // End of init function
 
@@ -98,16 +98,28 @@ function handleMouseMove(e) {
 
   const deltaX = e.clientX - initialX;
 
-  if (deltaX > 42) {
+  if (deltaX > tier2) {
+    video.playbackRate = fullMaxPlaybackSpeed
+    indicator.innerText = `${video.playbackRate}x Speed`;
+  } else if (deltaX > tier1 && deltaX < tier2) {
     video.playbackRate = maxPlaybackSpeed
     indicator.innerText = `${video.playbackRate}x Speed`;
-  } else if (deltaX < -42) {
+  } else if (deltaX < -tier2) {
+    video.playbackRate = fullMinPlaybackSpeed
+    indicator.innerText = `${video.playbackRate}x Speed`;
+  } else if (deltaX < -tier1) {
     video.playbackRate = minPlaybackSpeed
     indicator.innerText = `${video.playbackRate}x Speed`;
   } else {
     video.playbackRate = playbackSpeed;
     indicator.innerText = `${playbackSpeed}x Speed`;
   }
+
+
+  // if it is greater than tier1 but less than tier2
+  // if (deltaX > tier1 && deltaX < tier2) {
+
+
 }
 
 
