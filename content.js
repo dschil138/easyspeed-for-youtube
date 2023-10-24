@@ -5,6 +5,7 @@ let longPressFlag = false;
 let lastVideoElement = null;
 let indicator;
 let initialX;
+let initialY;
 let minPlaybackSpeed;
 let playbackSpeed;
 let maxPlaybackSpeed;
@@ -12,6 +13,8 @@ let fullMaxPlaybackSpeed = 5;
 let fullMinPlaybackSpeed = 1.1;
 let tier1 = 42;
 let tier2 = 134;
+let setPersistentSpeed = false;
+let newPersistentSpeed;
 
 
 function init() {
@@ -58,25 +61,44 @@ function init() {
 
     // Mouse Down
     video.addEventListener('mousedown', (e) => {
-      initialX = e.clientX;
+      originalSpeed = parseFloat(video.playbackRate);
 
-        originalSpeed = parseFloat(video.playbackRate);
+      initialX = e.clientX;
+      initialY = e.clientY;
+
+      setPersistentSpeed = false;
+      newPersistentSpeed = originalSpeed;
+
+        
         longPressTimer = setTimeout(() => {
+          originalSpeed = parseFloat(video.playbackRate);
+
           video.playbackRate = playbackSpeed;
           indicator.innerText = `${playbackSpeed}x Speed`;
+          indicator.style.fontWeight = 'normal';
+
           longPressFlag = true;
           indicator.style.display = 'block';
 
           video.addEventListener('mousemove', handleMouseMove, true);
 
-        }, 250);
+        }, 180);
     }, true);
 
     // Mouse Up
     video.addEventListener('mouseup', (e) => {
       clearTimeout(longPressTimer);
       // video.playbackRate = originalSpeed;
-      indicator.style.display = 'none';
+      deltax = 0;
+      deltay = 0;
+
+      if (setPersistentSpeed) {
+        setTimeout(() => {
+          indicator.style.display = 'none';
+        }, 2000);
+      } else {
+        indicator.style.display = 'none';
+      }
       video.removeEventListener('mousemove', handleMouseMove, true);
     
       if (longPressFlag) {
@@ -84,11 +106,42 @@ function init() {
     
         setTimeout(() => {
           // prevents odd double pause/play behavior
-        }, 10);
+        }, 20);
       }
     }, true);
 
+
+    video.addEventListener('pause', (e) => {
+      setPersistentSpeed = false;
+      newPersistentSpeed = originalSpeed;
+      indicator.style.fontWeight = 'normal';
+
+      if (longPressFlag) {
+        video.play();  
+      }
+
+    }, true);
+
+    // video.addEventListener('click', () => {
+    //   setPersistentSpeed = false;
+    //   newPersistentSpeed = originalSpeed;
+    //   indicator.style.fontWeight = 'normal';
+    // }, true);
+
+
   } // End of if statement
+
+  // setTimeout(() => {
+    console.log('setPersistentSpeed', setPersistentSpeed);
+    if (setPersistentSpeed) {
+      video.playbackRate = newPersistentSpeed;
+      // setPersistentSpeed = false;
+    }
+    
+  // }, 150);
+
+  
+
 
 } // End of init function
 
@@ -97,6 +150,8 @@ function handleMouseMove(e) {
   if (!longPressFlag) return;
 
   const deltaX = e.clientX - initialX;
+  const deltaY = e.clientY - initialY;
+
 
   if (deltaX > tier2) {
     video.playbackRate = fullMaxPlaybackSpeed
@@ -115,13 +170,19 @@ function handleMouseMove(e) {
     indicator.innerText = `${playbackSpeed}x Speed`;
   }
 
-
-  // if it is greater than tier1 but less than tier2
-  // if (deltaX > tier1 && deltaX < tier2) {
-
+  if (deltaY > 60 || deltaY < -60) {
+    setPersistentSpeed = true;
+    newPersistentSpeed = video.playbackRate;
+    indicator.style.fontWeight = 'bold';
+  } else {
+    setPersistentSpeed = false;
+    newPersistentSpeed = originalSpeed;
+    // make not bold anymore
+    indicator.style.fontWeight = 'normal';
+  }
 
 }
 
 
-// Call it every 2 seconds
-setInterval(init, 2000);
+// Call it every 500 ms
+setInterval(init, 500);
