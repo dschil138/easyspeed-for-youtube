@@ -15,7 +15,7 @@ h2, p {
   padding: 10px;
 }
 
-.button-group, .left-speed-button-group, .right-speed-button-group {
+.button-group, .left-speed-button-group, .right-speed-button-group, .leftest-speed-button-group, .rightest-speed-button-group {
   display: row;
   flex-direction: column;
   padding-right: 15px;
@@ -37,7 +37,7 @@ h2, p {
   cursor: pointer;
 }
 
-.right-speed-button, .left-speed-button {
+.right-speed-button, .left-speed-button, .rightest-speed-button, .leftest-speed-button {
   background-color: #414141;
   color: #abb2bf;
   width: 3.8em;
@@ -57,7 +57,7 @@ h2, p {
   color: #c4c7cb;
 }
 
-.right-speed-button.selected, .left-speed-button.selected {
+.right-speed-button.selected, .left-speed-button.selected, .rightest-speed-button.selected, .leftest-speed-button.selected {
   background-color: #4d9ad8;
   color: #fff;
 }

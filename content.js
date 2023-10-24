@@ -9,17 +9,27 @@ let initialY;
 let minPlaybackSpeed;
 let playbackSpeed;
 let maxPlaybackSpeed;
-let fullMaxPlaybackSpeed = 5;
-let fullMinPlaybackSpeed = 1.1;
+let maxestPlaybackSpeed = 5;
+let minestPlaybackSpeed = 1.1;
 let tier1 = 42;
-let tier2 = 134;
+let tier2 = 160;
+let verticalTier = 80;
 let setPersistentSpeed = false;
 let newPersistentSpeed;
+let speedPersisting = false;
+let firstRun = true;
 
 
 function init() {
   // Get any previous settings from chrome storage 
   // hast to run at the start of each init 
+
+  chrome.storage.sync.get('minestSpeed', function(data) {
+    minestPlaybackSpeed = parseFloat(data.minestSpeed) || 1.1;
+  }
+  );
+
+
   chrome.storage.sync.get('minSpeed', function(data) {
     minPlaybackSpeed = parseFloat(data.minSpeed) || 1.5;
   }
@@ -34,6 +44,23 @@ function init() {
     maxPlaybackSpeed = parseFloat(data.maxSpeed) || 3;
   }
   );
+
+  chrome.storage.sync.get('maxestSpeed', function(data) {
+    maxestPlaybackSpeed = parseFloat(data.maxestSpeed) || 5;
+  }
+  );
+
+  // if (firstRun) {
+  //   originalSpeed = parseFloat(video.playbackRate);
+  //   firstRun = false;
+  // }
+
+  // remove the original overlay
+  // we will be replacing it with our own overlay, to avoid confusion
+  const overlay = document.querySelector('.ytp-speedmaster-overlay.ytp-overlay');
+  if (overlay) {
+    overlay.remove();
+  }
 
 
   video = document.querySelector('video');
@@ -61,21 +88,25 @@ function init() {
 
     // Mouse Down
     video.addEventListener('mousedown', (e) => {
-      originalSpeed = parseFloat(video.playbackRate);
+      // if (!speedPersisting) {
+      //   originalSpeed = parseFloat(video.playbackRate);
+      // }
 
       initialX = e.clientX;
       initialY = e.clientY;
 
       setPersistentSpeed = false;
-      newPersistentSpeed = originalSpeed;
 
         
         longPressTimer = setTimeout(() => {
-          originalSpeed = parseFloat(video.playbackRate);
+          if (!speedPersisting) {
+            originalSpeed = parseFloat(video.playbackRate);
+          }
 
           video.playbackRate = playbackSpeed;
           indicator.innerText = `${playbackSpeed}x Speed`;
           indicator.style.fontWeight = 'normal';
+          indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
 
           longPressFlag = true;
           indicator.style.display = 'block';
@@ -84,6 +115,7 @@ function init() {
 
         }, 180);
     }, true);
+
 
     // Mouse Up
     video.addEventListener('mouseup', (e) => {
@@ -95,9 +127,10 @@ function init() {
       if (setPersistentSpeed) {
         setTimeout(() => {
           indicator.style.display = 'none';
-        }, 2000);
+        }, 1800);
       } else {
         indicator.style.display = 'none';
+        // speedPersisting = false;
       }
       video.removeEventListener('mousemove', handleMouseMove, true);
     
@@ -106,41 +139,53 @@ function init() {
     
         setTimeout(() => {
           // prevents odd double pause/play behavior
-        }, 20);
+        }, 10);
       }
     }, true);
 
 
-    video.addEventListener('pause', (e) => {
-      setPersistentSpeed = false;
-      newPersistentSpeed = originalSpeed;
-      indicator.style.fontWeight = 'normal';
-
-      if (longPressFlag) {
-        video.play();  
-      }
-
-    }, true);
-
-    // video.addEventListener('click', () => {
+    // video.addEventListener('pause', (e) => {
     //   setPersistentSpeed = false;
     //   newPersistentSpeed = originalSpeed;
+    //   speedPersisting = false;
     //   indicator.style.fontWeight = 'normal';
+    //   indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+
+    //   if (longPressFlag) {
+    //     video.play();  
+    //   }
+
     // }, true);
+
+
+    video.addEventListener('click', (e) => {
+      if (speedPersisting) {
+        console.log('IF - originalSpeed: ', originalSpeed);
+        video.playbackRate = originalSpeed;
+        speedPersisting = false;
+      } 
+
+      else if (setPersistentSpeed) {
+        console.log('ELSE IF - newPersistentSpeed: ', newPersistentSpeed);
+        video.playbackRate = newPersistentSpeed;
+        speedPersisting = true;
+      } 
+
+      else {
+        console.log('last ELSE - originatlSpeed: ', originalSpeed);
+        video.playbackRate = originalSpeed;
+        speedPersisting = false;
+
+      }
+
+    }, true);
 
 
   } // End of if statement
 
-  // setTimeout(() => {
-    console.log('setPersistentSpeed', setPersistentSpeed);
-    if (setPersistentSpeed) {
-      video.playbackRate = newPersistentSpeed;
-      // setPersistentSpeed = false;
-    }
-    
-  // }, 150);
-
   
+
+  console.log('speedPersisting: ', speedPersisting);
 
 
 } // End of init function
@@ -148,19 +193,17 @@ function init() {
 
 function handleMouseMove(e) {
   if (!longPressFlag) return;
-
   const deltaX = e.clientX - initialX;
   const deltaY = e.clientY - initialY;
 
-
   if (deltaX > tier2) {
-    video.playbackRate = fullMaxPlaybackSpeed
+    video.playbackRate = maxestPlaybackSpeed
     indicator.innerText = `${video.playbackRate}x Speed`;
   } else if (deltaX > tier1 && deltaX < tier2) {
     video.playbackRate = maxPlaybackSpeed
     indicator.innerText = `${video.playbackRate}x Speed`;
   } else if (deltaX < -tier2) {
-    video.playbackRate = fullMinPlaybackSpeed
+    video.playbackRate = minestPlaybackSpeed
     indicator.innerText = `${video.playbackRate}x Speed`;
   } else if (deltaX < -tier1) {
     video.playbackRate = minPlaybackSpeed
@@ -170,19 +213,16 @@ function handleMouseMove(e) {
     indicator.innerText = `${playbackSpeed}x Speed`;
   }
 
-  if (deltaY > 60 || deltaY < -60) {
+  if (deltaY > verticalTier || deltaY < -verticalTier) {
     setPersistentSpeed = true;
     newPersistentSpeed = video.playbackRate;
     indicator.style.fontWeight = 'bold';
-  } else {
-    setPersistentSpeed = false;
-    newPersistentSpeed = originalSpeed;
-    // make not bold anymore
-    indicator.style.fontWeight = 'normal';
+    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+
   }
 
 }
 
 
 // Call it every 500 ms
-setInterval(init, 500);
+setInterval(init, 2000);
