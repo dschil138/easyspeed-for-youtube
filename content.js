@@ -12,12 +12,13 @@ let maxPlaybackSpeed;
 let maxestPlaybackSpeed = 5;
 let minestPlaybackSpeed = 1.1;
 let tier1 = 42;
-let tier2 = 160;
+let tier2 = 150;
 let verticalTier = 80;
 let setPersistentSpeed = false;
 let newPersistentSpeed;
 let speedPersisting = false;
 let firstRun = true;
+let counter = 0;
 
 
 function init() {
@@ -50,13 +51,7 @@ function init() {
   }
   );
 
-  // if (firstRun) {
-  //   originalSpeed = parseFloat(video.playbackRate);
-  //   firstRun = false;
-  // }
-
-  // remove the original overlay
-  // we will be replacing it with our own overlay, to avoid confusion
+  // remove the original overlay - we will be replacing it with our own overlay, to avoid confusion
   const overlay = document.querySelector('.ytp-speedmaster-overlay.ytp-overlay');
   if (overlay) {
     overlay.remove();
@@ -72,10 +67,10 @@ function init() {
     indicator.style.fontSize = '1.4em';
     indicator.innerText = `${playbackSpeed}x Speed`;
     indicator.style.position = 'absolute';
-    indicator.style.top = '40px';
+    indicator.style.top = '35px';
     indicator.style.right = 'calc(50% - 50px)';
     indicator.style.borderRadius = '11px';
-    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
     indicator.style.color = 'white';
     indicator.style.padding = '8px';
     indicator.style.paddingLeft = '13px';
@@ -88,15 +83,10 @@ function init() {
 
     // Mouse Down
     video.addEventListener('mousedown', (e) => {
-      // if (!speedPersisting) {
-      //   originalSpeed = parseFloat(video.playbackRate);
-      // }
 
       initialX = e.clientX;
       initialY = e.clientY;
-
       setPersistentSpeed = false;
-
         
         longPressTimer = setTimeout(() => {
           if (!speedPersisting) {
@@ -105,33 +95,32 @@ function init() {
 
           video.playbackRate = playbackSpeed;
           indicator.innerText = `${playbackSpeed}x Speed`;
+          indicator.style.fontSize = '1.4em';
           indicator.style.fontWeight = 'normal';
-          indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-
-          longPressFlag = true;
+          indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
           indicator.style.display = 'block';
 
-          video.addEventListener('mousemove', handleMouseMove, true);
+          longPressFlag = true;
 
-        }, 180);
+          video.addEventListener('mousemove', handleMouseMove, true);
+        }, 220);
     }, true);
 
 
     // Mouse Up
     video.addEventListener('mouseup', (e) => {
       clearTimeout(longPressTimer);
-      // video.playbackRate = originalSpeed;
       deltax = 0;
       deltay = 0;
 
       if (setPersistentSpeed) {
         setTimeout(() => {
           indicator.style.display = 'none';
-        }, 1800);
+        }, 1700);
       } else {
         indicator.style.display = 'none';
-        // speedPersisting = false;
       }
+
       video.removeEventListener('mousemove', handleMouseMove, true);
     
       if (longPressFlag) {
@@ -140,52 +129,29 @@ function init() {
         setTimeout(() => {
           // prevents odd double pause/play behavior
         }, 10);
+
       }
     }, true);
 
 
-    // video.addEventListener('pause', (e) => {
-    //   setPersistentSpeed = false;
-    //   newPersistentSpeed = originalSpeed;
-    //   speedPersisting = false;
-    //   indicator.style.fontWeight = 'normal';
-    //   indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-
-    //   if (longPressFlag) {
-    //     video.play();  
-    //   }
-
-    // }, true);
 
 
     video.addEventListener('click', (e) => {
       if (speedPersisting) {
-        console.log('IF - originalSpeed: ', originalSpeed);
         video.playbackRate = originalSpeed;
         speedPersisting = false;
       } 
-
       else if (setPersistentSpeed) {
-        console.log('ELSE IF - newPersistentSpeed: ', newPersistentSpeed);
         video.playbackRate = newPersistentSpeed;
         speedPersisting = true;
       } 
-
       else {
-        console.log('last ELSE - originatlSpeed: ', originalSpeed);
-        video.playbackRate = originalSpeed;
+        video.playbackRate = parseFloat(originalSpeed);
         speedPersisting = false;
-
       }
-
     }, true);
 
-
   } // End of if statement
-
-  
-
-  console.log('speedPersisting: ', speedPersisting);
 
 
 } // End of init function
@@ -217,12 +183,19 @@ function handleMouseMove(e) {
     setPersistentSpeed = true;
     newPersistentSpeed = video.playbackRate;
     indicator.style.fontWeight = 'bold';
-    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.45)';
 
+  } else {
+    setPersistentSpeed = false;
+    indicator.style.fontWeight = 'normal';
+    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
   }
 
 }
 
 
-// Call it every 500 ms
-setInterval(init, 2000);
+// Give late scripts time to load
+if (counter < 6) {
+  setTimeout(init, 800);
+  counter++;
+}
