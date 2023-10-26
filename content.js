@@ -1,5 +1,5 @@
 let video;
-let originalSpeed;
+let originalSpeed = 1;
 let longPressTimer;
 let longPressFlag = false;
 let lastVideoElement = null;
@@ -27,31 +27,21 @@ function init() {
 
   chrome.storage.sync.get('minestSpeed', function(data) {
     minestPlaybackSpeed = parseFloat(data.minestSpeed) || 1.1;
-  }
-  );
-
-
+  });
   chrome.storage.sync.get('minSpeed', function(data) {
     minPlaybackSpeed = parseFloat(data.minSpeed) || 1.5;
-  }
-  );
-
+  });
   chrome.storage.sync.get('speed', function(data) {
     playbackSpeed = parseFloat(data.speed) || 2;
   });
-
-
   chrome.storage.sync.get('maxSpeed', function(data) {
     maxPlaybackSpeed = parseFloat(data.maxSpeed) || 3;
-  }
-  );
-
+  });
   chrome.storage.sync.get('maxestSpeed', function(data) {
     maxestPlaybackSpeed = parseFloat(data.maxestSpeed) || 5;
-  }
-  );
+  });
 
-  // remove the original overlay - we will be replacing it with our own overlay, to avoid confusion
+  // remove the original overlay - we will be replacing it with our own overlay to avoid confusion
   const overlay = document.querySelector('.ytp-speedmaster-overlay.ytp-overlay');
   if (overlay) {
     overlay.remove();
@@ -116,38 +106,28 @@ function init() {
       if (setPersistentSpeed) {
         setTimeout(() => {
           indicator.style.display = 'none';
-        }, 1700);
+        }, 1500);
       } else {
         indicator.style.display = 'none';
       }
 
       video.removeEventListener('mousemove', handleMouseMove, true);
-    
-      if (longPressFlag) {
-        longPressFlag = false;
-    
-        setTimeout(() => {
-          // prevents odd double pause/play behavior
-        }, 10);
 
-      }
     }, true);
 
 
 
 
     video.addEventListener('click', (e) => {
-      if (speedPersisting) {
-        video.playbackRate = originalSpeed;
-        speedPersisting = false;
-      } 
-      else if (setPersistentSpeed) {
-        video.playbackRate = newPersistentSpeed;
-        speedPersisting = true;
-      } 
-      else {
-        video.playbackRate = parseFloat(originalSpeed);
-        speedPersisting = false;
+      if (longPressFlag) {
+        if (speedPersisting && !setPersistentSpeed) {
+          video.playbackRate = parseFloat(originalSpeed);
+        } 
+        else if (setPersistentSpeed) {
+          video.playbackRate = newPersistentSpeed;
+        }
+
+        longPressFlag = false;
       }
     }, true);
 
@@ -162,6 +142,7 @@ function handleMouseMove(e) {
   const deltaX = e.clientX - initialX;
   const deltaY = e.clientY - initialY;
 
+  // X Axis will set the speed
   if (deltaX > tier2) {
     video.playbackRate = maxestPlaybackSpeed
     indicator.innerText = `${video.playbackRate}x Speed`;
@@ -179,6 +160,7 @@ function handleMouseMove(e) {
     indicator.innerText = `${playbackSpeed}x Speed`;
   }
 
+  // Y Axis will decide if speed is persistent after releasing click
   if (deltaY > verticalTier || deltaY < -verticalTier) {
     setPersistentSpeed = true;
     newPersistentSpeed = video.playbackRate;
