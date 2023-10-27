@@ -5,20 +5,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const rightButtons = document.querySelectorAll('.right-speed-button');
   const rightestButtons = document.querySelectorAll('.rightest-speed-button');
 
+
   // Load any previously saved settings
-  chrome.storage.sync.get(['minSpeed', 'speed', 'maxSpeed'], function(data) {
-    const minestPlaybackSpeed = parseFloat(data.minestSpeed) || 1.1;
-    const minSpeed = parseFloat(data.minSpeed) || 1.5;
+  chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'fastSpeed', 'maxSpeed'], function(data) {
+    const minSpeed = parseFloat(data.minSpeed) || 1.1;
+    const slowSpeed = parseFloat(data.slowSpeed) || 1.5;
     // const speed = parseFloat(data.speed) || 2;
-    const maxSpeed = parseFloat(data.maxSpeed) || 3;
-    const maxestPlaybackSpeed = parseFloat(data.maxestSpeed) || 5;
-    document.querySelector(`[minest-data-speed="${minestPlaybackSpeed}"]`).classList.add('selected');
+    const fastSpeed = parseFloat(data.fastSpeed) || 3;
+    const maxSpeed = parseFloat(data.maxSpeed) || 5;
     document.querySelector(`[min-data-speed="${minSpeed}"]`).classList.add('selected');
-    // document.querySelector(`[data-speed="${speed}"]`).classList.add('selected');
+    document.querySelector(`[slow-data-speed="${slowSpeed}"]`).classList.add('selected');
+    // document.querySelector(`[main-data-speed="${speed}"]`).classList.add('selected');
+    document.querySelector(`[fast-data-speed="${fastSpeed}"]`).classList.add('selected');
     document.querySelector(`[max-data-speed="${maxSpeed}"]`).classList.add('selected');
-    document.querySelector(`[maxest-data-speed="${maxestPlaybackSpeed}"]`).classList.add('selected');
   });
 
+
+  // popup tooltip for disabled 2x buttons
   document.addEventListener("DOMContentLoaded", function() {
     const buttons = document.querySelectorAll(".speed-button");
     
@@ -28,68 +31,78 @@ document.addEventListener('DOMContentLoaded', function() {
             tooltip.style.display = tooltip.style.display === "inline-block" ? "none" : "inline-block";
         });
     });
-});
+  }
+
+);
 
 
 
 leftestButtons.forEach((button) => {
     button.addEventListener('click', function() {
-      const minestPlaybackSpeed = this.getAttribute('minest-data-speed');
+
+      const minSpeed = this.getAttribute('min-data-speed');
 
       // Remove 'selected' class from the buttons but add it to just to clicked button
       leftestButtons.forEach((btn) => btn.classList.remove('selected'));
       this.classList.add('selected');
 
       // Save it in Chrome
-      chrome.storage.sync.set({minestSpeed: minestPlaybackSpeed});
+      chrome.storage.sync.set({minSpeed: minSpeed});
+
+       // Send a message to the content script
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "runInit"});
+      });
     });
   });
 
 
   leftButtons.forEach((button) => {
     button.addEventListener('click', function() {
-      const minSpeed = this.getAttribute('min-data-speed');
+      const slowSpeed = this.getAttribute('slow-data-speed');
 
       // Remove 'selected' class from the buttons but add it to just to clicked button
       leftButtons.forEach((btn) => btn.classList.remove('selected'));
       this.classList.add('selected');
 
       // Save it in Chrome
-      chrome.storage.sync.set({minSpeed: minSpeed});
+      chrome.storage.sync.set({slowSpeed: slowSpeed});
+      
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "runInit"});
+      });
     });
   });
 
-  // mainButtons.forEach((button) => {
-  //   button.addEventListener('click', function() {
-  //     const speed = this.getAttribute('data-speed');
-
-  //     mainButtons.forEach((btn) => btn.classList.remove('selected'));
-  //     this.classList.add('selected');
-
-  //     chrome.storage.sync.set({speed: speed});
-  //   });
-  // });
 
   rightButtons.forEach((button) => {
     button.addEventListener('click', function() {
-      const maxSpeed = this.getAttribute('max-data-speed');
+      const fastSpeed = this.getAttribute('fast-data-speed');
 
       rightButtons.forEach((btn) => btn.classList.remove('selected'));
       this.classList.add('selected');
 
-      chrome.storage.sync.set({maxSpeed: maxSpeed});
+      chrome.storage.sync.set({fastSpeed: fastSpeed});
+
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "runInit"});
+      });
     });
   });
 
 
   rightestButtons.forEach((button) => {
     button.addEventListener('click', function() {
-      const maxestPlaybackSpeed = this.getAttribute('maxest-data-speed');
+      const maxSpeed = this.getAttribute('max-data-speed');
 
       rightestButtons.forEach((btn) => btn.classList.remove('selected'));
       this.classList.add('selected');
 
-      chrome.storage.sync.set({maxestSpeed: maxestPlaybackSpeed});
+      chrome.storage.sync.set({maxSpeed: maxSpeed});
+
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "runInit"});
+      });
     });
   });
 
