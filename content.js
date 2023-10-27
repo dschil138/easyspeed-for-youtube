@@ -6,7 +6,7 @@ let lastVideoElement = null;
 let indicator;
 let initialX;
 let initialY;
-let minSpeed = 1.4;
+let minSpeed = 1.2;
 let slowSpeed = 1.5;
 let mainSpeed = 2;
 let fastSpeed = 3;
