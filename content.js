@@ -29,16 +29,16 @@ chrome.runtime.onMessage.addListener(
 
 function syncSpeeds() {
   chrome.storage.sync.get('minSpeed', function(data) {
-    minSpeed = parseFloat(data.minSpeed) || 1.3;
+    minSpeed = data.minSpeed || 1.3;
   });
   chrome.storage.sync.get('slowSpeed', function(data) {
-    slowSpeed = parseFloat(data.slowSpeed) || 1.5;
+    slowSpeed = data.slowSpeed || 1.5;
   });
   chrome.storage.sync.get('fastSpeed', function(data) {
-    fastSpeed = parseFloat(data.fastSpeed) || 3;
+    fastSpeed = data.fastSpeed || 3;
   });
   chrome.storage.sync.get('maxSpeed', function(data) {
-    maxSpeed = parseFloat(data.maxSpeed) || 5;
+    maxSpeed = data.maxSpeed || 5;
   });
 }
 
@@ -71,7 +71,7 @@ function init() {
         
         longPressTimer = setTimeout(() => {
           if (!speedPersisting) {
-            originalSpeed = parseFloat(video.playbackRate);
+            originalSpeed = video.playbackRate;
           }
 
           video.playbackRate = mainSpeed;
@@ -111,7 +111,7 @@ function init() {
     video.addEventListener('click', (e) => {
       if (longPressFlag) {
         if (speedPersisting && !setPersistentSpeed) {
-          video.playbackRate = parseFloat(originalSpeed);
+          video.playbackRate = originalSpeed;
         } else if (setPersistentSpeed) {
           video.playbackRate = newPersistentSpeed;
         }

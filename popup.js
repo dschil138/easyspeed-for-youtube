@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Load any previously saved settings
   chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'fastSpeed', 'maxSpeed'], function(data) {
-    const minSpeed = parseFloat(data.minSpeed) || 1.1;
-    const slowSpeed = parseFloat(data.slowSpeed) || 1.5;
-    const fastSpeed = parseFloat(data.fastSpeed) || 3;
-    const maxSpeed = parseFloat(data.maxSpeed) || 5;
+    const minSpeed = data.minSpeed || 1.1;
+    const slowSpeed = data.slowSpeed || 1.5;
+    const fastSpeed = data.fastSpeed || 3;
+    const maxSpeed = data.maxSpeed || 5;
     document.querySelector(`[min-data-speed="${minSpeed}"]`).classList.add('selected');
     document.querySelector(`[slow-data-speed="${slowSpeed}"]`).classList.add('selected');
     document.querySelector(`[fast-data-speed="${fastSpeed}"]`).classList.add('selected');
@@ -26,7 +26,7 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 });
 }
 
-
+// function to handle button clicks and store associated speeds in chrome storage
 function buttonHandler(buttonGroup, dataAttribute, speedName) {
   buttonGroup.forEach((button) => {
     button.addEventListener('click', function() {
