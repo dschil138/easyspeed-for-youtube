@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Load any previously saved settings
   chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'fastSpeed', 'maxSpeed'], function(data) {
-    const minSpeed = data.minSpeed || 1.1;
+    const minSpeed = data.minSpeed || 1.2;
     const slowSpeed = data.slowSpeed || 1.5;
     const fastSpeed = data.fastSpeed || 3;
     const maxSpeed = data.maxSpeed || 5;

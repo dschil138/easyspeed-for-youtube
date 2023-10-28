@@ -17,7 +17,7 @@ let speedPersisting = false;
 let counter = 0;
 const tier1 = 42;
 const tier2 = 150;
-const verticalTier = 80;
+const verticalTier = 60;
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -29,7 +29,7 @@ chrome.runtime.onMessage.addListener(
 
 function syncSpeeds() {
   chrome.storage.sync.get('minSpeed', function(data) {
-    minSpeed = data.minSpeed || 1.3;
+    minSpeed = data.minSpeed || 1.2;
   });
   chrome.storage.sync.get('slowSpeed', function(data) {
     slowSpeed = data.slowSpeed || 1.5;
