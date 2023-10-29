@@ -18,6 +18,9 @@ let counter = 0;
 const tier1 = 42;
 const tier2 = 150;
 const verticalTier = 60;
+let didISetPause = false;
+
+
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -26,6 +29,31 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("DOMContentLoaded");
+  let observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.addedNodes) {
+        console.log(mutation.addedNodes);
+        Array.from(mutation.addedNodes).forEach((node) => {
+          console.log("node", node);
+          if (node.tagName === 'VIDEO') {
+            console.log("init");
+            init(node);
+            console.log("for: ", node);
+          }
+        });
+      }
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+  console.log("observer", observer);
+});
+
+
 
 function syncSpeeds() {
   chrome.storage.sync.get('minSpeed', function(data) {
@@ -43,9 +71,19 @@ function syncSpeeds() {
 }
 
 
-function init() {
-  
+function init(videoElement) {
+  console.log("init");
   syncSpeeds();
+
+  if (!videoElement) {
+    console.log('No video element found');
+    return;
+  } else {
+    console.log("found video element");
+  }
+  video = videoElement;
+
+  
 
   // remove the original overlay - we will be replacing it with our own overlay to avoid confusion
   const overlay = document.querySelector('.ytp-speedmaster-overlay.ytp-overlay');
@@ -53,17 +91,22 @@ function init() {
 
 
   video = document.querySelector('video');
-  
+
+    
   if (lastVideoElement !== video && video !== null) {
-    lastVideoElement = video;
+    console.log("in IF");
+    console.log("video", video);
     
     indicator = document.createElement('div');
     indicator.classList.add('indicator');
     video.parentElement.appendChild(indicator);
+    console.log("parent", video.parentElement);
+    console.log("indicator", indicator);
 
 
 
     video.addEventListener('mousedown', (e) => {
+      console.log("mousedown");
 
       initialX = e.clientX;
       initialY = e.clientY;
@@ -90,6 +133,10 @@ function init() {
 
 
     video.addEventListener('mouseup', (e) => {
+      console.log("Before mouseup: setPersistendSpeed, newPersistentSpeed", setPersistentSpeed, newPersistentSpeed);
+      console.log("longPressFlag mouseup", longPressFlag);
+
+
       clearTimeout(longPressTimer);
       deltax = 0;
       deltay = 0;
@@ -104,25 +151,47 @@ function init() {
 
       video.removeEventListener('mousemove', handleMouseMove, true);
 
+      console.log("playbackRate after mouseup", video.playbackRate);
+
     }, true);
+
+    video.addEventListener('pause', (e) => {
+      console.log('Video paused');
+      // Log the call stack to understand what led to this event
+      console.trace();
+    });
+    
 
 
 
     video.addEventListener('click', (e) => {
+      console.log("Before click: setPersistendSpeed, newPersistentSpeed", setPersistentSpeed, newPersistentSpeed);
+      console.log("longPressFlag click", longPressFlag);
+
       if (longPressFlag) {
+
         if (speedPersisting && !setPersistentSpeed) {
-          video.playbackRate = originalSpeed;
+          console.log("if speedPersisting && NOT setPersistentSpeed");
+          video.playbackRate = 1;
         } else if (setPersistentSpeed) {
+          console.log("ense setPersistentSpeed");
           video.playbackRate = newPersistentSpeed;
+        } else {
+          console.log("else");
+          video.playbackRate = 1;
         }
 
         longPressFlag = false;
+        e.stopPropagation();
+        e.preventDefault();
       }
+      console.log("playbackRate after click", video.playbackRate);
     }, true);
   } // End of if statement
 } // End of init function
 
 function newSpeed(rate) {
+  console.log("newSpeed", rate);
   video.playbackRate = rate;
   indicator.innerText = `${rate}x Speed`;
 }
@@ -163,7 +232,10 @@ function handleMouseMove(e) {
 
 
 // Give late scripts time to load
-if (counter < 6) {
-  setTimeout(init, 800);
-  counter++;
-}
+setTimeout(() => {
+  const videoElement = document.querySelector('video');
+  if (videoElement) {
+    init(videoElement);
+  }
+}, 800);
+
