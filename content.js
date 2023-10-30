@@ -32,17 +32,12 @@ chrome.runtime.onMessage.addListener(
 
 
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("DOMContentLoaded");
   let observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes) {
-        console.log(mutation.addedNodes);
         Array.from(mutation.addedNodes).forEach((node) => {
-          console.log("node", node);
           if (node.tagName === 'VIDEO') {
-            console.log("init");
             init(node);
-            console.log("for: ", node);
           }
         });
       }
@@ -50,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
-  console.log("observer", observer);
 });
 
 
@@ -72,18 +66,9 @@ function syncSpeeds() {
 
 
 function init(videoElement) {
-  console.log("init");
+
   syncSpeeds();
-
-  if (!videoElement) {
-    console.log('No video element found');
-    return;
-  } else {
-    console.log("found video element");
-  }
   video = videoElement;
-
-  
 
   // remove the original overlay - we will be replacing it with our own overlay to avoid confusion
   const overlay = document.querySelector('.ytp-speedmaster-overlay.ytp-overlay');
@@ -94,19 +79,13 @@ function init(videoElement) {
 
     
   if (lastVideoElement !== video && video !== null) {
-    console.log("in IF");
-    console.log("video", video);
-    
+
     indicator = document.createElement('div');
     indicator.classList.add('indicator');
     video.parentElement.appendChild(indicator);
-    console.log("parent", video.parentElement);
-    console.log("indicator", indicator);
-
 
 
     video.addEventListener('mousedown', (e) => {
-      console.log("mousedown");
 
       initialX = e.clientX;
       initialY = e.clientY;
@@ -133,9 +112,6 @@ function init(videoElement) {
 
 
     video.addEventListener('mouseup', (e) => {
-      console.log("Before mouseup: setPersistendSpeed, newPersistentSpeed", setPersistentSpeed, newPersistentSpeed);
-      console.log("longPressFlag mouseup", longPressFlag);
-
 
       clearTimeout(longPressTimer);
       deltax = 0;
@@ -151,47 +127,35 @@ function init(videoElement) {
 
       video.removeEventListener('mousemove', handleMouseMove, true);
 
-      console.log("playbackRate after mouseup", video.playbackRate);
-
     }, true);
 
-    video.addEventListener('pause', (e) => {
-      console.log('Video paused');
-      // Log the call stack to understand what led to this event
-      console.trace();
-    });
     
 
-
-
     video.addEventListener('click', (e) => {
-      console.log("Before click: setPersistendSpeed, newPersistentSpeed", setPersistentSpeed, newPersistentSpeed);
-      console.log("longPressFlag click", longPressFlag);
 
       if (longPressFlag) {
 
         if (speedPersisting && !setPersistentSpeed) {
-          console.log("if speedPersisting && NOT setPersistentSpeed");
-          video.playbackRate = 1;
+          video.playbackRate = originalSpeed;
         } else if (setPersistentSpeed) {
-          console.log("ense setPersistentSpeed");
           video.playbackRate = newPersistentSpeed;
+          speedPersisting = true;
         } else {
-          console.log("else");
-          video.playbackRate = 1;
+          video.playbackRate = originalSpeed;
         }
 
         longPressFlag = false;
         e.stopPropagation();
         e.preventDefault();
       }
-      console.log("playbackRate after click", video.playbackRate);
     }, true);
   } // End of if statement
 } // End of init function
 
+
+
+
 function newSpeed(rate) {
-  console.log("newSpeed", rate);
   video.playbackRate = rate;
   indicator.innerText = `${rate}x Speed`;
 }
