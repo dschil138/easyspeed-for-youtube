@@ -1,4 +1,5 @@
-# youtube-2x-click
+# DragSpeed For YouTube
+![2x-promo-16-titles](https://github.com/dschil138/youtube-2x-click/assets/11950317/f059de93-3228-45cd-a8f9-f68e4a876124)
 
 A Chrome extension that lets you click and hold anywhere on a Youtube video to make it play at 2X speed for as long as you hold down the click.
 

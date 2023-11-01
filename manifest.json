@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Youtube 2x Click",
-  "version": "2.3",
+  "name": "DragSpeed For YouTube",
+  "version": "2.4",
   "description": "Easily change the playback speed of youtube videos by clicking and dragging your mouse to the left or the right. Drag down to make the speed persist after click is released.",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
