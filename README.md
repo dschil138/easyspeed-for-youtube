@@ -1,10 +1,8 @@
 # DragSpeed For YouTube
-![2x-promo-16-titles](https://github.com/dschil138/youtube-2x-click/assets/11950317/f059de93-3228-45cd-a8f9-f68e4a876124)
+![2x-promo-17-titles-2](https://github.com/dschil138/DragSpeed-For-YouTube/assets/11950317/0b1fc24a-5728-4e8d-a6d9-8534718fe9b7)
 
-A Chrome extension that lets you click and hold anywhere on a Youtube video to make it play at 2X speed for as long as you hold down the click.
+A Chrome extension that lets you click and hold anywhere on a Youtube video to make it play at 2X speed. Drag your click to the right for faster speeds. Drag to the left for slower speeds.
 
-When the click is released, the video will resume playing at whatever speed you were previously watching at.
+When the click is released, the video will resume playing at its regular speed. If you want to keep the new speed, drag the click down before releasing.
 
 Very helpful for quickly skimming sections of a video you are not interested in, without having to open the settings menu and select speed from there. And no need to reopen it again to set it back to normal when your done!
-
-This used to be an experimental feature available for YouTube Premium Subscribers, but they got rid of it. This extension allows anyone to use this feature
