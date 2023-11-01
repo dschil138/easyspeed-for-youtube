@@ -14,11 +14,9 @@ let maxSpeed = 5;
 let setPersistentSpeed = false;
 let newPersistentSpeed;
 let speedPersisting = false;
-let counter = 0;
 const tier1 = 42;
-const tier2 = 150;
-const verticalTier = 60;
-let didISetPause = false;
+const tier2 = 140;
+const verticalTier = 62;
 
 
 
@@ -29,24 +27,6 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
-
-
-document.addEventListener("DOMContentLoaded", function() {
-  let observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.addedNodes) {
-        Array.from(mutation.addedNodes).forEach((node) => {
-          if (node.tagName === 'VIDEO') {
-            init(node);
-          }
-        });
-      }
-    });
-  });
-
-  observer.observe(document.body, { childList: true, subtree: true });
-});
-
 
 
 function syncSpeeds() {
@@ -65,6 +45,24 @@ function syncSpeeds() {
 }
 
 
+document.addEventListener("DOMContentLoaded", function() {
+  let observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.addedNodes) {
+        Array.from(mutation.addedNodes).forEach((node) => {
+          if (node.tagName === 'VIDEO') {
+            init(node);
+          }
+        });
+      }
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+
+
+
 function init(videoElement) {
 
   syncSpeeds();
@@ -74,10 +72,8 @@ function init(videoElement) {
   const overlay = document.querySelector('.ytp-speedmaster-overlay.ytp-overlay');
   overlay?.remove();
 
-
   video = document.querySelector('video');
 
-    
   if (lastVideoElement !== video && video !== null) {
 
     indicator = document.createElement('div');
@@ -95,7 +91,6 @@ function init(videoElement) {
           if (!speedPersisting) {
             originalSpeed = video.playbackRate;
           }
-
           video.playbackRate = mainSpeed;
           indicator.innerText = `${mainSpeed}x Speed`;
           indicator.style.fontSize = '1.4em';
@@ -112,7 +107,6 @@ function init(videoElement) {
 
 
     video.addEventListener('mouseup', (e) => {
-
       clearTimeout(longPressTimer);
       deltax = 0;
       deltay = 0;
@@ -125,16 +119,9 @@ function init(videoElement) {
         indicator.style.display = 'none';
       }
 
-      video.removeEventListener('mousemove', handleMouseMove, true);
-
-    }, true);
-
-    
-
-    video.addEventListener('click', (e) => {
-
       if (longPressFlag) {
-
+        e.stopPropagation();
+        e.preventDefault();
         if (speedPersisting && !setPersistentSpeed) {
           video.playbackRate = originalSpeed;
         } else if (setPersistentSpeed) {
@@ -143,15 +130,23 @@ function init(videoElement) {
         } else {
           video.playbackRate = originalSpeed;
         }
+      }
+      video.removeEventListener('mousemove', handleMouseMove, true);
 
-        longPressFlag = false;
+    }, true);
+
+
+    video.addEventListener('click', (e) => {
+
+      if (longPressFlag) {
         e.stopPropagation();
         e.preventDefault();
+        longPressFlag = false;
+        
       }
     }, true);
-  } // End of if statement
-} // End of init function
-
+  }
+} // End init
 
 
 
