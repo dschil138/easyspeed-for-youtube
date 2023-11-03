@@ -10,15 +10,15 @@
   <div class="container">
     <div class="leftest-button-group">
       <p>Full Drag Left:<br></p>
-        <button class="leftest-speed-button" min-data-speed="0.5">0.5x</button>
-        <button class="leftest-speed-button" min-data-speed="0.75">0.75x</button>
-        <button class="leftest-speed-button" min-data-speed="1.1">1.1x</button>
-        <button class="leftest-speed-button" min-data-speed="1.2">1.2x</button>
-        <button class="leftest-speed-button" min-data-speed="1.5">1.5x</button>
-      </div>
+      <button class="leftest-speed-button" min-data-speed="0.5">0.5x</button>
+      <button class="leftest-speed-button" min-data-speed="0.75">0.75x</button>
+      <button class="leftest-speed-button" min-data-speed="1.1">1.1x</button>
+      <button class="leftest-speed-button" min-data-speed="1.2">1.2x</button>
+      <button class="leftest-speed-button" min-data-speed="1.5">1.5x</button>
+    </div>
 
     <div class="left-button-group">
-    <p>Half Drag Left:<br></p>
+      <p>Half Drag Left:<br></p>
       <button class="left-speed-button" slow-data-speed="1.1">1.1x</button>
       <button class="left-speed-button" slow-data-speed="1.2">1.2x</button>
       <button class="left-speed-button" slow-data-speed="1.5">1.5x</button>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="right-button-group">
-    <p>Half Drag Right:</p>
+      <p>Half Drag Right:</p>
       <button class="right-speed-button" fast-data-speed="2">2x</button>
       <button class="right-speed-button" fast-data-speed="2.5">2.5x</button>
       <button class="right-speed-button" fast-data-speed="3">3x</button>
@@ -46,14 +46,31 @@
 
     <div class="rightest-button-group">
       <p>Full Drag Right:</p>
-        <button class="rightest-speed-button" max-data-speed="2.5">2.5x</button>
-        <button class="rightest-speed-button" max-data-speed="3">3x</button>
-        <button class="rightest-speed-button" max-data-speed="4">4x</button>
-        <button class="rightest-speed-button" max-data-speed="5">5x</button>
-        <button class="rightest-speed-button" max-data-speed="10">10x</button>
+      <button class="rightest-speed-button" max-data-speed="2.5">2.5x</button>
+      <button class="rightest-speed-button" max-data-speed="3">3x</button>
+      <button class="rightest-speed-button" max-data-speed="4">4x</button>
+      <button class="rightest-speed-button" max-data-speed="5">5x</button>
+      <button class="rightest-speed-button" max-data-speed="10">10x</button>
+    </div>
 
-      </div>
   </div>
+
+
+  <div class="inputs-container">
+    
+    <div class="left-input">
+      <p class="label">Comma Held Speed</p>
+      <input type="number" id="comma-quantity"  step="0.25" min="0" max="10" value="2">
+      <br>
+    </div>
+    <div class="right-input">
+      <p class="label">Period Held Speed</p>
+      <input type="number" id="period-quantity"  step="0.25" min="0" max="10" value="5">
+      <br>
+    </div>
+  </div>
+
+  
   <script src="popup.js"></script>
 </body>
 </html>

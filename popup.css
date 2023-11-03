@@ -71,3 +71,25 @@ h2, p {
   border-radius: 4px;
   font-size: 12px;
 }
+
+
+
+.inputs-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-input,
+.right-input {
+  flex-grow: 1;
+  text-align: center; 
+}
+
+.label {
+  margin-bottom: 0.5em !important;
+}
+
+#period-quantity, #comma-quantity {
+  margin-bottom: 1em;
+}

@@ -1,4 +1,5 @@
 let video;
+let moviePlayer;
 let originalSpeed = 1;
 let longPressTimer;
 let longPressFlag = false;
@@ -11,13 +12,32 @@ let slowSpeed = 1.5;
 let mainSpeed = 2;
 let fastSpeed = 3;
 let maxSpeed = 5;
+let periodKeySpeed = 5;
+let commaKeySpeed = 2;
 let setPersistentSpeed = false;
 let newPersistentSpeed;
 let speedPersisting = false;
+let rewindInterval;
+let firstRewind = true;
+let periodPressed = false;
+let commaPressed = false;
+let hotkeyOriginalSpeed = 1;
+let isPeriodKeyDown = false;
+let isCommaKeyDown = false;
+let keydownTimer;
+let lastPeriodKeyReleaseTime = 0;
+let lastCommaKeyReleaseTime = 0;
+let doubleTapAndHoldPeriod = false;
+let doubleTapAndHoldComma = false;
 const tier1 = 42;
 const tier2 = 140;
+const tier3 = 280;
 const verticalTier = 62;
 
+
+
+
+const overlayDiv = document.querySelector('.ytp-doubletap-ui-legacy');
 
 
 chrome.runtime.onMessage.addListener(
@@ -42,6 +62,14 @@ function syncSpeeds() {
   chrome.storage.sync.get('maxSpeed', function(data) {
     maxSpeed = data.maxSpeed || 5;
   });
+  chrome.storage.sync.get('periodKeySpeed', function(data) {
+    periodKeySpeed = data.periodKeySpeed || 5;
+  }
+  );
+  chrome.storage.sync.get('commaKeySpeed', function(data) {
+    commaKeySpeed = data.commaKeySpeed || 2;
+  }
+  );
 }
 
 
@@ -61,6 +89,15 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+indicator = document.createElement('div');
+
+function addIndicator(rate) {
+  indicator.innerText = `${rate}x Speed${rate === 16 ? ' (max)' : ''}`;
+  indicator.style.fontSize = '1.4em';
+  indicator.style.fontWeight = 'normal';
+  indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
+  indicator.style.display = 'block';
+}
 
 
 function init(videoElement) {
@@ -76,87 +113,192 @@ function init(videoElement) {
 
   if (lastVideoElement !== video && video !== null) {
 
-    indicator = document.createElement('div');
     indicator.classList.add('indicator');
     video.parentElement.appendChild(indicator);
 
+    const moviePlayer = videoElement.closest('#movie_player');
+  
+    if (moviePlayer) {
+      moviePlayer.addEventListener('mousedown', mousedownHandler.bind(null, moviePlayer), true);
 
-    video.addEventListener('mousedown', (e) => {
+      moviePlayer.addEventListener('mouseup', mouseupHandler.bind(null, moviePlayer), true);
 
-      initialX = e.clientX;
-      initialY = e.clientY;
-      setPersistentSpeed = false;
-        
-        longPressTimer = setTimeout(() => {
-          if (!speedPersisting) {
-            originalSpeed = video.playbackRate;
+      moviePlayer.addEventListener('click', clickHandler.bind(null, moviePlayer), true);
+
+
+      moviePlayer.addEventListener('keydown', function (e) {
+        if (e.key === '.') {
+          let currentTime = Date.now();
+          let timeDifference = currentTime - lastPeriodKeyReleaseTime;
+      
+          if (timeDifference < 400) {
+            doubleTapAndHoldPeriod = true;
           }
-          video.playbackRate = mainSpeed;
-          indicator.innerText = `${mainSpeed}x Speed`;
-          indicator.style.fontSize = '1.4em';
-          indicator.style.fontWeight = 'normal';
-          indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
-          indicator.style.display = 'block';
 
-          longPressFlag = true;
+          if (doubleTapAndHoldPeriod) {
+            isPeriodKeyDown = true;
 
-          video.addEventListener('mousemove', handleMouseMove, true);
-        }, 220);
-    }, true);
+            // video.playbackRate = periodKeySpeed*2;
+            video.playbackRate = Math.min(periodKeySpeed * 2, 16);
 
+            addIndicator(Math.min(periodKeySpeed * 2, 16));
+          } else {
+            video.playbackRate = periodKeySpeed;
+            addIndicator(periodKeySpeed);
+          }
 
-
-    video.addEventListener('mouseup', (e) => {
-      clearTimeout(longPressTimer);
-      deltax = 0;
-      deltay = 0;
-
-      if (setPersistentSpeed) {
-        setTimeout(() => {
-          indicator.style.display = 'none';
-        }, 1500);
-      } else {
-        indicator.style.display = 'none';
-      }
-
-      if (longPressFlag) {
-        e.stopPropagation();
-        e.preventDefault();
-        if (speedPersisting && !setPersistentSpeed) {
-          video.playbackRate = originalSpeed;
-        } else if (setPersistentSpeed) {
-          video.playbackRate = newPersistentSpeed;
-          speedPersisting = true;
-        } else {
-          video.playbackRate = originalSpeed;
+        } else if (e.key === ',') {
+          let currentTime = Date.now();
+          let timeDifference = currentTime - lastCommaKeyReleaseTime;
+      
+          if (timeDifference < 400) {
+            doubleTapAndHoldComma = true;
+          }
+          if (doubleTapAndHoldComma) {
+            isCommaKeyDown = true;
+            video.playbackRate = 0.75;
+            addIndicator(0.75);
+          } else {
+            video.playbackRate = commaKeySpeed;
+            addIndicator(commaKeySpeed);
+          }
         }
-      }
-      video.removeEventListener('mousemove', handleMouseMove, true);
+      });
+      
+      moviePlayer.addEventListener('keyup', function (e) {
+        if (e.key === '.') {
+          doubleTapAndHoldPeriod = false;
+          lastPeriodKeyReleaseTime = Date.now();
+          isPeriodKeyDown = false;
+          indicator.style.display = 'none';
+          if (!isPeriodKeyDown) {
+            video.playbackRate = 1;
+          }
 
-    }, true);
+        }
+        if (e.key === ',') {
+          doubleTapAndHoldComma = false;
+          lastCommaKeyReleaseTime = Date.now();
+          isCommaKeyDown = false;
+          indicator.style.display = 'none';
+          if (!isCommaKeyDown) {
+            video.playbackRate = 1;
+          }
+        }
+      });
 
 
-    video.addEventListener('click', (e) => {
-
-      if (longPressFlag) {
-        e.stopPropagation();
-        e.preventDefault();
-        longPressFlag = false;
-        
-      }
-    }, true);
+    }
   }
 } // End init
+
+
+
+
+
+function simulateLeftArrowKeyPress() {
+  video.focus();
+
+  const leftArrowKeyCode = 37;
+  const downEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowLeft',
+      code: 'ArrowLeft',
+      keyCode: leftArrowKeyCode,
+      which: leftArrowKeyCode,
+      bubbles: true,
+      cancelable: true
+  });
+  video.dispatchEvent(downEvent);
+
+  const upEvent = new KeyboardEvent('keyup', {
+    key: 'ArrowLeft',
+    code: 'ArrowLeft',
+    keyCode: leftArrowKeyCode,
+    which: leftArrowKeyCode,
+    bubbles: true,
+    cancelable: true
+  });
+video.dispatchEvent(upEvent);
+}
 
 
 
 function newSpeed(rate) {
   video.playbackRate = rate;
   indicator.innerText = `${rate}x Speed`;
+  clearInterval(rewindInterval);
+  rewindInterval = null;
+  firstRewind = true;
 }
 
 
-function handleMouseMove(e) {
+
+
+
+function mousedownHandler(moviePlayer, e) {
+
+  initialX = e.clientX;
+  initialY = e.clientY;
+  setPersistentSpeed = false;
+    
+    longPressTimer = setTimeout(() => {
+      if (!speedPersisting) {
+        originalSpeed = video.playbackRate;
+      }
+      video.playbackRate = mainSpeed;
+      addIndicator(mainSpeed);
+
+      longPressFlag = true;
+
+      moviePlayer.addEventListener('mousemove', handleMouseMove.bind(null, moviePlayer), true);
+    }, 220);
+}
+
+function mouseupHandler(moviePlayer, e) {
+  moviePlayer.removeEventListener('mousemove', handleMouseMove, true);
+  firstRewind = true;
+
+  clearInterval(rewindInterval);
+  rewindInterval = null;
+  clearTimeout(longPressTimer);
+  deltax = 0;
+  deltay = 0;
+
+  if (setPersistentSpeed) {
+    setTimeout(() => {
+      indicator.style.display = 'none';
+    }, 1500);
+  } else {
+    indicator.style.display = 'none';
+  }
+
+  if (longPressFlag) {
+    e.stopPropagation();
+    e.preventDefault();
+    if (speedPersisting && !setPersistentSpeed) {
+      video.playbackRate = originalSpeed;
+    } else if (setPersistentSpeed) {
+      video.playbackRate = newPersistentSpeed;
+      speedPersisting = true;
+    } else {
+      video.playbackRate = originalSpeed;
+    }
+  }
+}
+
+function clickHandler(moviePlayer, e) {
+  clearInterval(rewindInterval);
+  rewindInterval = null;
+
+  if (longPressFlag) {
+    e.stopPropagation();
+    e.preventDefault();
+    longPressFlag = false;
+  }
+}
+
+
+function handleMouseMove(moviePlayer, e) {
   if (!longPressFlag) return;
   const deltaX = e.clientX - initialX;
   const deltaY = e.clientY - initialY;
@@ -166,6 +308,17 @@ function handleMouseMove(e) {
     newSpeed(maxSpeed);
   } else if (deltaX > tier1 && deltaX < tier2) {
     newSpeed(fastSpeed);
+  } else if (deltaX < -tier3) {
+    indicator.innerText = `REWIND`;
+    if (firstRewind) {
+      firstRewind = false;
+      simulateLeftArrowKeyPress();
+    }
+    if (!rewindInterval) {
+      rewindInterval = setInterval(() => {
+        simulateLeftArrowKeyPress();
+      }, 800);
+    }
   } else if (deltaX < -tier2) {
     newSpeed(minSpeed);
   } else if (deltaX < -tier1) {
@@ -190,6 +343,7 @@ function handleMouseMove(e) {
 }
 
 
+
 // Give late scripts time to load
 setTimeout(() => {
   const videoElement = document.querySelector('video');
@@ -197,4 +351,3 @@ setTimeout(() => {
     init(videoElement);
   }
 }, 800);
-
