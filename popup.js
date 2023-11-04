@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
   chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'fastSpeed', 'maxSpeed', 'commaKeySpeed', 'periodKeySpeed'], function(data) {
     const commaKeySpeed = data.commaKeySpeed || 2;
     const periodKeySpeed = data.periodKeySpeed || 5;
-    const minSpeed = data.minSpeed || 1.2;
+    const minSpeed = data.minSpeed || 1.25;
     const slowSpeed = data.slowSpeed || 1.5;
     const fastSpeed = data.fastSpeed || 3;
     const maxSpeed = data.maxSpeed || 5;

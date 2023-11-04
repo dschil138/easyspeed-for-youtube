@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "DragSpeed For YouTube",
+  "name": "EasySpeed For YouTube",
   "version": "2.5",
-  "description": "Easily change the playback speed of youtube videos by clicking and dragging your mouse to the left or the right.",
+  "description": "Click and drag anywhere on a Youtube video to adjust the playback speed.",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
     {

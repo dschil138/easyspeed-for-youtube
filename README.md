@@ -1,9 +1,17 @@
 # DragSpeed For YouTube
-![2x-promo-17-titles-2](https://github.com/dschil138/DragSpeed-For-YouTube/assets/11950317/0b1fc24a-5728-4e8d-a6d9-8534718fe9b7)
+<!-- ![dragspeed-promo-4](https://github.com/dschil138/DragSpeed-For-YouTube/assets/11950317/b9da9ad2-0454-4da8-912d-105279832a65) -->
+![easyspeed-promo](https://github.com/dschil138/DragSpeed-For-YouTube/assets/11950317/1cc7a0bc-3bd9-41e7-ad57-d7365bc9e80e)
+<!-- ![easyspeed-promo-2](https://github.com/dschil138/DragSpeed-For-YouTube/assets/11950317/e398e41f-e708-4bc9-a3a4-e277184d1edb) -->
 
-A Chrome extension that lets you click and hold anywhere on a Youtube video to make it play at 2X speed. Drag your click to the right for faster speeds. Drag to the left for slower speeds.
+A Chrome extension that lets you click and drag anywhere on a Youtube video to adjust the playback speed.
 
-When the click is released, the video will resume playing at its regular speed. If you want to keep the new speed, drag the click down before releasing.
+Click and hold for 2x. When the click is released, it will go back to regular playback. To play at faster speeds, like 3x or 10x, drag your click to the right. For slower speeds, drag to the left.
+
+Drag all the way left to rewind.
+
+For any of these speeds, when the click is released, the video will resume playing at its regular speed. 
+
+If you want to set the new speed to continue after the click is released, simply drag the click down before releasing.
 <p align="center">
 <img width="686" alt="2x-2" src="https://github.com/dschil138/DragSpeed-For-YouTube/assets/11950317/1967cbd6-1d05-4e97-830e-da890fe13619">
 </p>
