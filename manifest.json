@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DragSpeed For YouTube",
-  "version": "2.4.2",
+  "version": "2.5",
   "description": "Easily change the playback speed of youtube videos by clicking and dragging your mouse to the left or the right.",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
@@ -18,11 +18,11 @@
     "default_popup": "popup.html"
   },
   "icons": {
-    "16": "images/icon16.png",
-    "32": "images/icon32.png",
-    "48": "images/icon48.png",
-    "64": "images/icon64.png",
-    "128": "images/icon128.png"
+    "16": "images/16.png",
+    "32": "images/32.png",
+    "48": "images/48.png",
+    "64": "images/64.png",
+    "128": "images/128.png"
   },
   "background": {
     "service_worker": "background.js"
