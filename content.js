@@ -34,6 +34,7 @@ const tier2 = 165;
 const tier3 = 280;
 const verticalTier = 65;
 
+const chromeControls = 'ytp-chrome-bottom';
 
 const overlayDiv = document.querySelector('.ytp-doubletap-ui-legacy');
 
@@ -235,6 +236,9 @@ function mousedownHandler(moviePlayer, e) {
   initialX = e.clientX;
   initialY = e.clientY;
   setPersistentSpeed = false;
+
+  const elements = document.elementsFromPoint(e.clientX, e.clientY);
+  if (elements.some(el => el.classList.contains(chromeControls))) { return; }
     
     longPressTimer = setTimeout(async () => {
       if (!speedPersisting) {
