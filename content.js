@@ -330,7 +330,7 @@ function handleMouseMove(moviePlayer, e) {
     setPersistentSpeed = true;
     newPersistentSpeed = video.playbackRate;
     indicator.style.fontWeight = 'bold';
-    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
   } else {
     setPersistentSpeed = false;
     indicator.style.fontWeight = 'normal';
