@@ -23,8 +23,8 @@ h1, h2, p {
 }
 
 .speed-button {
-  background-color: #373737;
-  color: #6a6e74;
+  background-color: #414141;
+  color: #abb2bf;
   width: 3.8em;
   border: none;
   border-radius: 4px;
@@ -52,12 +52,12 @@ h1, h2, p {
   cursor: pointer;
 }
 
-.speed-button.selected {
+/* .speed-button.selected {
   background-color: #465765;
   color: #c4c7cb;
-}
+} */
 
-.right-speed-button.selected, .left-speed-button.selected, .rightest-speed-button.selected, .leftest-speed-button.selected {
+.speed-button.selected, .right-speed-button.selected, .left-speed-button.selected, .rightest-speed-button.selected, .leftest-speed-button.selected {
   background-color: #4d9ad8;
   color: #fff;
 }

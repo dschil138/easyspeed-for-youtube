@@ -55,6 +55,9 @@ function syncSpeeds() {
   chrome.storage.sync.get('slowSpeed', function(data) {
     slowSpeed = data.slowSpeed || 1.5;
   });
+  chrome.storage.sync.get('mainSpeed', function(data) {
+    mainSpeed = data.mainSpeed || 1.5;
+  });
   chrome.storage.sync.get('fastSpeed', function(data) {
     fastSpeed = data.fastSpeed || 3;
   });
@@ -264,6 +267,11 @@ function mousedownHandler(moviePlayer, e) {
       addIndicator(mainSpeed);
       longPressFlag = true;
       moviePlayer.addEventListener('mousemove', handleMouseMove.bind(null, moviePlayer), true);
+      setTimeout(() => {
+        video.playbackRate = mainSpeed;
+      },283);
+
+
     }, 220);
 }
 
