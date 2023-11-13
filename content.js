@@ -29,6 +29,8 @@ let lastPeriodKeyReleaseTime = 0;
 let lastCommaKeyReleaseTime = 0;
 let doubleTapAndHoldPeriod = false;
 let doubleTapAndHoldComma = false;
+let extensionEnabled = true;
+let hotkeysEnabled = true;
 const tier1 = 45;
 const tier2 = 165;
 const tier3 = 280;
@@ -61,12 +63,16 @@ function syncSpeeds() {
   });
   chrome.storage.sync.get('periodKeySpeed', function(data) {
     periodKeySpeed = data.periodKeySpeed || 5;
-  }
-  );
+  });
   chrome.storage.sync.get('commaKeySpeed', function(data) {
     commaKeySpeed = data.commaKeySpeed || 2;
-  }
-  );
+  });
+  chrome.storage.sync.get('extensionEnabled', function(data) {
+    extensionEnabled = data.extensionEnabled;
+  });
+  chrome.storage.sync.get('hotkeysEnabled', function(data) {
+    hotkeysEnabled = data.hotkeysEnabled;
+  });
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -108,6 +114,8 @@ function findOriginalSpeed() {
 
 
 function simulateLeftArrowKeyPress() {
+  if (!extensionEnabled) return;
+
   video.focus();
   const leftArrowKeyCode = 37;
   const downEvent = new KeyboardEvent('keydown', {
@@ -143,7 +151,12 @@ function newSpeed(rate) {
 
 function init(videoElement) {
   syncSpeeds();
+  if (!extensionEnabled) return;
+
   video = videoElement;
+
+  console.log('init');
+  console.log("extensionEnabled: ", extensionEnabled);
 
   // remove the original 2x speed overlay - we will be replacing it with our own overlay to avoid confusion
   const overlay = document.querySelector('.ytp-speedmaster-overlay.ytp-overlay');
@@ -166,6 +179,8 @@ function init(videoElement) {
       moviePlayer.addEventListener('click', clickHandler.bind(null, moviePlayer), true);
 
       moviePlayer.addEventListener('keydown', function (e) {
+        if (!extensionEnabled || !hotkeysEnabled) return;
+
         if (e.key === '.') {
           let currentTime = Date.now();
           let timeDifference = currentTime - lastPeriodKeyReleaseTime;
@@ -233,6 +248,7 @@ function init(videoElement) {
 
 // MOUSE DOWN HANDLER
 function mousedownHandler(moviePlayer, e) {
+  if (!extensionEnabled) return;
   initialX = e.clientX;
   initialY = e.clientY;
   setPersistentSpeed = false;
@@ -254,6 +270,8 @@ function mousedownHandler(moviePlayer, e) {
 
 // MOUSE UP HANDLER
 function mouseupHandler(moviePlayer, e) {
+  if (!extensionEnabled) return;
+
   moviePlayer.removeEventListener('mousemove', handleMouseMove, true);
   firstRewind = true;
 
@@ -275,6 +293,8 @@ function mouseupHandler(moviePlayer, e) {
 
 // CLICK HANDLER
 function clickHandler(moviePlayer, e) {
+  if (!extensionEnabled) return;
+
   clearInterval(rewindInterval);
   rewindInterval = null;
 
@@ -301,6 +321,8 @@ function clickHandler(moviePlayer, e) {
 
 // MOUSE MOVE HANDLER
 function handleMouseMove(moviePlayer, e) {
+  if (!extensionEnabled) return;
+
   if (!longPressFlag) return;
   const deltaX = e.clientX - initialX;
   const deltaY = e.clientY - initialY;
@@ -346,6 +368,7 @@ function handleMouseMove(moviePlayer, e) {
 
 // Give late scripts time to load
 setTimeout(() => {
+  if (!extensionEnabled) return;
   const videoElement = document.querySelector('video');
   if (videoElement) {
     init(videoElement);

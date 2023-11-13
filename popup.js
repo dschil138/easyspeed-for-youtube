@@ -4,6 +4,32 @@ document.addEventListener('DOMContentLoaded', function() {
   const leftestButtons = document.querySelectorAll('.leftest-speed-button');
   const rightButtons = document.querySelectorAll('.right-speed-button');
   const rightestButtons = document.querySelectorAll('.rightest-speed-button');
+  const toggleSwitch = document.getElementById('toggleSwitch');
+  const keysToggleSwitch = document.getElementById('keysToggleSwitch');
+
+  chrome.storage.sync.get('extensionEnabled', function(data) {
+    toggleSwitch.checked = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
+  });
+  chrome.storage.sync.get('hotkeysEnabled', function(data) {
+    keysToggleSwitch.checked = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
+  });
+
+  toggleSwitch.addEventListener('change', function() {
+    console.log("Switch state: ", this.checked);
+    chrome.storage.sync.set({'extensionEnabled': this.checked}, function() {
+        console.log('Extension enabled state is set to ', this.checked);
+    });
+    runInit();
+  });
+
+  keysToggleSwitch.addEventListener('change', function() {
+    console.log("Switch state: ", this.checked);
+    chrome.storage.sync.set({'hotkeysEnabled': this.checked}, function() {
+        console.log('Extension enabled state is set to ', this.checked);
+    });
+    runInit();
+  });
+
 
   // Load any previously saved settings
   chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'fastSpeed', 'maxSpeed', 'commaKeySpeed', 'periodKeySpeed'], function(data) {
