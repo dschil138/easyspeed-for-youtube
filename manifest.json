@@ -1,19 +1,19 @@
 {
   "manifest_version": 3,
   "name": "EasySpeed For YouTube",
-  "version": "2.5",
-  "description": "Click and drag anywhere on a Youtube video to adjust the playback speed.",
+  "version": "2.6",
+  "description": "Click & drag on Youtube videos to adjust the playback speed.",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["*://www.youtube.com/*", "*://www.youtube-nocookie.com/*"],
+
       "css": ["styles.css"],
       "js": ["content.js"],
       "all_frames": true,
       "run_at": "document_idle"
     }
   ],
-  "host_permissions": ["*://www.youtube.com/*"],
   "action": {
     "default_popup": "popup.html"
   },
