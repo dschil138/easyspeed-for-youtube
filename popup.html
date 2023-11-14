@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Popup</title>
-  <script src="popup.js"></script>
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
@@ -16,60 +15,81 @@
     </label>
   </div>
 
+
   <div class="container">
-    <div class="leftest-button-group">
-      <p>Full Drag Left:<br></p>
-      <button class="leftest-speed-button" min-data-speed="0.25">0.25x</button>
-      <button class="leftest-speed-button" min-data-speed="0.5">0.5x</button>
-      <button class="leftest-speed-button" min-data-speed="0.75">0.75x</button>
-      <button class="leftest-speed-button" min-data-speed="1.1">1.1x</button>
-      <button class="leftest-speed-button" min-data-speed="1.25">1.25x</button>
-      <button class="leftest-speed-button" min-data-speed="1.5">1.5x</button>
-      <button class="leftest-speed-button" min-data-speed="1.75">1.75x</button>
+    <div class="leftest-button-group button-group">
+      <p>Full Drag<br>Left</p>
+      <div class="number-input">
+        <input type="number" id="min-quantity" class="quantity-box" step="0.25" min="0" max="16" value="1.25">
+        <div class="button-container">
+          <button id="incrementMin" class="svg-button">
+            <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,5 5,0 10,5" fill="currentColor"/></svg>
+          </button>
+          <button id="decrementMin" class="svg-button">
+              <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,0 5,5 10,0" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="left-button-group">
-      <p>Half Drag Left:<br></p>
-      <button class="left-speed-button" slow-data-speed="0.75">0.75x</button>
-      <button class="left-speed-button" slow-data-speed="1.1">1.1x</button>
-      <button class="left-speed-button" slow-data-speed="1.25">1.25x</button>
-      <button class="left-speed-button" slow-data-speed="1.35">1.35x</button>
-      <button class="left-speed-button" slow-data-speed="1.5">1.5x</button>
-      <button class="left-speed-button" slow-data-speed="1.75">1.75x</button>
-      <button class="left-speed-button" slow-data-speed="2">2x</button>
+    <div class="left-button-group button-group">
+      <p>Half Drag<br>Left</p>
+      <div class="number-input">
+        <input type="number" id="slow-quantity" class="quantity-box" step="0.25" min="0" max="16" value="1.5">
+        <div class="button-container">
+          <button id="incrementSlow" class="svg-button">
+            <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,5 5,0 10,5" fill="currentColor"/></svg>
+          </button>
+          <button id="decrementSlow" class="svg-button">
+              <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,0 5,5 10,0" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="button-group">
-    <p>Held Click Speed:</p>
-      <button class="speed-button" main-data-speed="1.2">1.2</button>
-      <button class="speed-button" main-data-speed="1.25">1.25</button>
-      <button class="speed-button" main-data-speed="1.5">1.5</button>
-      <button class="speed-button" main-data-speed="2">2x</button>
-      <button class="speed-button" main-data-speed="2.5">2.5</button>
-      <button class="speed-button" main-data-speed="3">3</button>
-      <button class="speed-button" main-data-speed="3.5">3.5</button>
+    <div class="main-button-group button-group">
+    <p>Held<br>Click</p>
+    <div class="number-input">
+      <input type="number" id="main-quantity" class="quantity-box" step="0.25" min="0" max="16" value="2">
+      <div class="button-container">
+        <button id="incrementMain" class="svg-button">
+          <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,5 5,0 10,5" fill="currentColor"/></svg>
+        </button>
+        <button id="decrementMain" class="svg-button">
+            <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,0 5,5 10,0" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
     </div>
 
-    <div class="right-button-group">
-      <p>Half Drag Right:</p>
-      <button class="right-speed-button" fast-data-speed="2">2x</button>
-      <button class="right-speed-button" fast-data-speed="2.25">2.25x</button>
-      <button class="right-speed-button" fast-data-speed="2.5">2.5x</button>
-      <button class="right-speed-button" fast-data-speed="3">3x</button>
-      <button class="right-speed-button" fast-data-speed="4">4x</button>
-      <button class="right-speed-button" fast-data-speed="5">5x</button>
-      <button class="right-speed-button" fast-data-speed="8">8x</button>
+    <div class="right-button-group button-group">
+      <p>Half Drag<br>Right</p>
+      <div class="number-input">
+        <input type="number" id="fast-quantity" class="quantity-box" step="0.25" min="0" max="16" value="3">
+        <div class="button-container">
+          <button id="incrementFast" class="svg-button">
+            <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,5 5,0 10,5" fill="currentColor"/></svg>
+          </button>
+          <button id="decrementFast" class="svg-button">
+              <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,0 5,5 10,0" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="rightest-button-group">
-      <p>Full Drag Right:</p>
-      <button class="rightest-speed-button" max-data-speed="2.5">2.5x</button>
-      <button class="rightest-speed-button" max-data-speed="3">3x</button>
-      <button class="rightest-speed-button" max-data-speed="4">4x</button>
-      <button class="rightest-speed-button" max-data-speed="5">5x</button>
-      <button class="rightest-speed-button" max-data-speed="8">8x</button>
-      <button class="rightest-speed-button" max-data-speed="10">10x</button>
-      <button class="rightest-speed-button" max-data-speed="16">16x</button>
+    <div class="rightest-button-group button-group">
+      <p>Full Drag<br>Right</p>
+      <div class="number-input">
+        <input type="number" id="max-quantity" class="quantity-box" step="0.25" min="0" max="16" value="5">
+        <div class="button-container">
+          <button id="incrementMax" class="svg-button">
+            <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,5 5,0 10,5" fill="currentColor"/></svg>
+          </button>
+          <button id="decrementMax" class="svg-button">
+              <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,0 5,5 10,0" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -89,14 +109,32 @@
     
     
     <div class="left-input">
-      <p class="label">Comma Held Speed</p>
-      <input type="number" id="comma-quantity"  step="0.25" min="0" max="10" value="2">
-      <br>
+      <p class="hotkey-label label">Comma Held Speed</p>
+      <div class="number-input">
+      <input type="number" id="comma-quantity" class="quantity-box"  step="0.25" min="0" max="10" value="2">
+      <div class="button-container">
+        <button id="incrementComma" class="svg-button">
+          <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,5 5,0 10,5" fill="currentColor"/></svg>
+        </button>
+        <button id="decrementComma" class="svg-button">
+            <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,0 5,5 10,0" fill="currentColor"/></svg>
+        </button>
+      </div>
+      </div>
     </div>
     <div class="right-input">
-      <p class="label">Period Held Speed</p>
-      <input type="number" id="period-quantity"  step="0.25" min="0" max="10" value="5">
-      <br>
+      <p class="hotkey-label label">Period Held Speed</p>
+      <div class="number-input">
+      <input type="number" id="period-quantity" class="quantity-box"  step="0.25" min="0" max="10" value="5">
+      <div class="button-container">
+        <button id="incrementPeriod" class="svg-button">
+          <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,5 5,0 10,5" fill="currentColor"/></svg>
+        </button>
+        <button id="decrementPeriod" class="svg-button">
+            <svg viewBox="0 0 10 5" width="10" height="5"><polygon points="0,0 5,5 10,0" fill="currentColor"/></svg>
+        </button>
+      </div>
+      </div>
     </div>
   </div>
 

@@ -31,10 +31,10 @@ let doubleTapAndHoldPeriod = false;
 let doubleTapAndHoldComma = false;
 let extensionEnabled = true;
 let hotkeysEnabled = true;
-const tier1 = 45;
-const tier2 = 165;
-const tier3 = 280;
-const verticalTier = 65;
+const tier1 = 50;
+const tier2 = 180;
+const tier3 = 330;
+const verticalTier = 60;
 
 const chromeControls = 'ytp-chrome-bottom';
 

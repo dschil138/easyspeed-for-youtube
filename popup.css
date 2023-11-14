@@ -2,6 +2,7 @@ body {
   background-color: #282c34;
   color: #abb2bf;
   font-family: Arial, sans-serif;
+  width: 44em;
 }
 h1, h2, p {
   margin-left: auto;
@@ -9,68 +10,50 @@ h1, h2, p {
   text-align: center;
 }
 
+p {
+  font: 12px;
+}
+
 .container {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  margin: auto;
+  margin-bottom: 3em;
   padding: 10px;
+  width: 90%;
 }
 
-.button-group, .left-speed-button-group, .right-speed-button-group, .leftest-speed-button-group, .rightest-speed-button-group {
+/* .main-button-group, .left-speed-button-group, .right-speed-button-group, .leftest-speed-button-group, .rightest-speed-button-group {
   display: row;
   flex-direction: column;
   padding-right: 15px;
   padding-left: 15px;
-}
-
-.speed-button {
-  background-color: #414141;
-  color: #abb2bf;
-  width: 3.8em;
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  padding-top: 7px;
-  padding-bottom: 6px;
-  margin: 10px;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  cursor: pointer;
-}
-
-.right-speed-button, .left-speed-button, .rightest-speed-button, .leftest-speed-button {
-  background-color: #414141;
-  color: #abb2bf;
-  width: 3.8em;
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  padding-top: 7px;
-  padding-bottom: 6px;
-  margin: 10px;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  cursor: pointer;
-}
-
-/* .speed-button.selected {
-  background-color: #465765;
-  color: #c4c7cb;
 } */
 
-.speed-button.selected, .right-speed-button.selected, .left-speed-button.selected, .rightest-speed-button.selected, .leftest-speed-button.selected {
-  background-color: #4d9ad8;
-  color: #fff;
+.button-group {
+  display: row;
+  flex-direction: column;
+  padding-right: 5px;
+  padding-left: 5px;
+  margin: 0.05em 0;
 }
 
-.tooltip {
-  display: none;
-  position: absolute;
-  background: #333;
-  color: #fff;
-  padding: 5px;
-  border-radius: 4px;
-  font-size: 12px;
-}
+.leftest-button-group {
+  padding-left: 0px !important;
+  margin-left: 0px !important;
+} 
+
+.rightest-button-group {
+  padding-right: 0px !important;
+  margin-right: 0px !important;
+} 
+
+.main-button-group {
+  margin-left: 2em !important;
+  margin-right: 2em !important;
+} 
+
 
 
 
@@ -84,15 +67,20 @@ h1, h2, p {
 .right-input {
   flex-grow: 1;
   text-align: center; 
+  margin-bottom: 1em;
 }
 
 .label {
   margin-bottom: 0.5em !important;
 }
 
+.hotkey-label {
+  margin-top: 0em !important;
+}
+/* 
 #period-quantity, #comma-quantity {
   margin-bottom: 1em;
-}
+} */
 
 
 
@@ -120,8 +108,8 @@ label {
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 54px;
+  height: 32px;
 }
 
 .small-switch {
@@ -154,7 +142,7 @@ label {
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
+  height: 24px;
   width: 26px;
   left: 4px;
   bottom: 4px;
@@ -170,6 +158,7 @@ label {
   left: 0;
   right: 0;
   bottom: 0;
+  border-radius: 4px;
   background-color: #ccc;
   -webkit-transition: .4s;
   transition: .4s;
@@ -182,6 +171,8 @@ label {
   width: 16px;
   left: 4px;
   bottom: 4px;
+  border-radius: 4px;
+
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -196,9 +187,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(19px);
+  -ms-transform: translateX(19px);
+  transform: translateX(19px);
 }
 
 input:checked + .small-slider {
@@ -230,3 +221,99 @@ input:checked + .small-slider:before {
 .small-slider.round:before {
   border-radius: 4px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.number-input {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Center-align vertically */
+  width: 6.5em;
+  margin: auto;
+}
+
+
+/* .number-input button {
+  width: 1.2em; 
+  height: 0.93em; 
+  font-size: 16px;
+  margin: 0;
+  border-radius: 4px;
+} */
+
+/* #min-quantity, #slow-quantity, #main-quantity, #fast-quantity, #max-quantity {
+  width: 2.2em; 
+  height: 1.6em;
+  font-size: 16px; 
+  text-align: center;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  border: 1px solid #2196F3; 
+  border-radius: 4px;
+} */
+
+.quantity-box {
+  width: 2.2em; 
+  height: 1.5em;
+  font-size: 18px; 
+  text-align: center;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  border: 1px solid #2196F3; 
+  border-radius: 4px;
+}
+
+/* Remove arrows from input for webkit browsers */
+/* #min-quantity::-webkit-outer-spin-button, #min-quantity::-webkit-inner-spin-button, #slow-quantity::-webkit-outer-spin-button, #slow-quantity::-webkit-inner-spin-button, #main-quantity::-webkit-outer-spin-button, #main-quantity::-webkit-inner-spin-button, #fast-quantity::-webkit-outer-spin-button, #fast-quantity::-webkit-inner-spin-button, #max-quantity::-webkit-outer-spin-button, #max-quantity::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+} */
+
+.quantity-box::-webkit-outer-spin-button, .quantity-box::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+.button-container {
+  display: flex; 
+  flex-direction: column; /* Stack buttons vertically */
+  margin-left: 0.15em;
+  /* margin-right: 0.6em; */
+}
+
+.svg-button {
+  width: 1.3em; /* Adjust width as needed */
+  height: 0.9em; /* Adjust height for half of the input box to stack properly */
+  margin-bottom: 0.05em; /* Space between buttons */
+  background-color: white;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.svg-button:last-child {
+  margin-bottom: 0; /* No margin for the last button */
+}
+
+.svg-button svg {
+  display: block; /* To prevent inline SVG aligning issues */
+  margin: auto; /* To center SVG in the button */
+}
+
