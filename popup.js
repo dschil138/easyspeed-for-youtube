@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   function handleInput(inputId, storageKey) {
-    console.log("handling")
-    console.log(inputId, storageKey)
     const inputElement = document.querySelector(inputId);
         const inputValue = inputElement.value;
         chrome.storage.sync.set({[storageKey]: inputValue});
@@ -16,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Load any previously saved settings
   chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'mainSpeed', 'fastSpeed', 'maxSpeed', 'commaKeySpeed', 'periodKeySpeed'], function(data) {
 
-    console.log(data);
     const commaKeySpeed = data.commaKeySpeed || 2;
     const periodKeySpeed = data.periodKeySpeed || 5;
 
@@ -26,40 +23,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const fastSpeed = data.fastSpeed || 5;
     const maxSpeed = data.maxSpeed || 2;
 
-    console.log(commaKeySpeed, periodKeySpeed);
-    console.log(minSpeed, slowSpeed, mainSpeed, fastSpeed, maxSpeed);
-
     document.querySelector('#period-quantity').value = periodKeySpeed;
     document.querySelector('#comma-quantity').value = commaKeySpeed;
 
-    // document.querySelector('#min-quantity').value = minSpeed;
-    // document.querySelector('#slow-quantity').value = slowSpeed;
-    // document.querySelector('#main-quantity').value = mainSpeed;
-    // document.querySelector('#fast-quantity').value = fastSpeed;
-    // document.querySelector('#max-quantity').value = maxSpeed;
-
-    // console.log("before")
-    // console.log(document.getElementById('main-quantity').value);
     document.getElementById('min-quantity').value = minSpeed;
     document.getElementById('slow-quantity').value = slowSpeed;
     document.getElementById('main-quantity').value = mainSpeed;
     document.getElementById('fast-quantity').value = fastSpeed;
     document.getElementById('max-quantity').value = maxSpeed;
-    // console.log("after")
-    // console.log(document.getElementById('main-quantity').value);
-
-
 
   });
-
-
-  let minQuantity = document.getElementById('min-quantity');
-  let slowQuantity = document.getElementById('slow-quantity');
-  let mainQuantity = document.getElementById('main-quantity');
-  let fastQuantity = document.getElementById('fast-quantity');
-  let maxQuantity = document.getElementById('max-quantity');
-  let commaQuantity = document.getElementById('comma-quantity');
-  let periodQuantity = document.getElementById('period-quantity');
 
 
   const toggleSwitch = document.getElementById('toggleSwitch');
@@ -76,113 +49,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   if (!addedListeners) {
-      
-    document.getElementById('incrementMin').addEventListener('click', function() {
-      minQuantity.value = +(parseFloat(minQuantity.value) + 0.25).toFixed(2);
-      handleInput('#min-quantity', 'minSpeed');
-    });
-    document.getElementById('decrementMin').addEventListener('click', function() {
-        minQuantity.value = +(parseFloat(minQuantity.value) - 0.25).toFixed(2);
-        handleInput('#min-quantity', 'minSpeed');
-    });
 
-    document.getElementById('min-quantity').addEventListener('input', function() {
-      handleInput('#min-quantity', 'minSpeed');
-    });
-
-    document.getElementById('incrementSlow').addEventListener('click', function() {
-      slowQuantity.value = +(parseFloat(slowQuantity.value) + 0.25).toFixed(2);
-      handleInput('#slow-quantity', 'slowSpeed');
-    });
-    document.getElementById('decrementSlow').addEventListener('click', function() {
-        slowQuantity.value = +(parseFloat(slowQuantity.value) - 0.25).toFixed(2);
-        handleInput('#slow-quantity', 'slowSpeed');
-    });
-
-    document.getElementById('slow-quantity').addEventListener('input', function() {
-      handleInput('#slow-quantity', 'slowSpeed');
-    });
-
-    document.getElementById('incrementMain').addEventListener('click', function() {
-      mainQuantity.value = +(parseFloat(mainQuantity.value) + 0.25).toFixed(2);
-      handleInput('#main-quantity', 'mainSpeed');
-    });
-    document.getElementById('decrementMain').addEventListener('click', function() {
-      mainQuantity.value = +(parseFloat(mainQuantity.value) - 0.25).toFixed(2);
-      handleInput('#main-quantity', 'mainSpeed');
-    });
-
-    document.getElementById('main-quantity').addEventListener('input', function() {
-      handleInput('#main-quantity', 'mainSpeed');
-    });
-
-    document.getElementById('incrementFast').addEventListener('click', function() {
-      fastQuantity.value = +(parseFloat(fastQuantity.value) + 0.25).toFixed(2);
-      handleInput('#fast-quantity', 'fastSpeed');
-    });
-    document.getElementById('decrementFast').addEventListener('click', function() {
-        fastQuantity.value = +(parseFloat(fastQuantity.value) - 0.25).toFixed(2);
-        handleInput('#fast-quantity', 'fastSpeed');
-    });
-
-    document.getElementById('fast-quantity').addEventListener('input', function() {
-      handleInput('#fast-quantity', 'fastSpeed');
-    });
-
-    document.getElementById('incrementMax').addEventListener('click', function() {
-      maxQuantity.value = +(parseFloat(maxQuantity.value) + 0.25).toFixed(2);
-      handleInput('#max-quantity', 'maxSpeed');
-    });
-    document.getElementById('decrementMax').addEventListener('click', function() {
-        maxQuantity.value = +(parseFloat(maxQuantity.value) - 0.25).toFixed(2);
-        handleInput('#max-quantity', 'maxSpeed');
-    });
-
-    document.getElementById('max-quantity').addEventListener('input', function() {
-      handleInput('#max-quantity', 'maxSpeed');
-    });
+    function addQuantityHandlers(quantityId, incrementId, decrementId, storageKey, handleInput) {
+      const quantityElement = document.getElementById(quantityId);
+      const incrementElement = document.getElementById(incrementId);
+      const decrementElement = document.getElementById(decrementId);
 
 
+      incrementElement.addEventListener('click', function() {
+        quantityElement.value = +(parseFloat(quantityElement.value) + 0.25).toFixed(2);
+        handleInput(`#${quantityId}`, storageKey);
+      });
 
+      decrementElement.addEventListener('click', function() {
+        quantityElement.value = +(parseFloat(quantityElement.value) - 0.25).toFixed(2);
+        handleInput(`#${quantityId}`, storageKey);
+      });
 
-    document.getElementById('incrementComma').addEventListener('click', function() {
-      commaQuantity.value = +(parseFloat(commaQuantity.value) + 0.25).toFixed(2);
-      handleInput('#comma-quantity', 'commaKeySpeed');
-    });
-    document.getElementById('decrementComma').addEventListener('click', function() {
-        commaQuantity.value = +(parseFloat(commaQuantity.value) - 0.25).toFixed(2);
-        handleInput('#comma-quantity', 'commaKeySpeed');
-    });
-    document.getElementById('incrementPeriod').addEventListener('click', function() {
-      periodQuantity.value = +(parseFloat(periodQuantity.value) + 0.25).toFixed(2);
-      handleInput('#period-quantity', 'periodKeySpeed');
-    });
-    document.getElementById('decrementPeriod').addEventListener('click', function() {
-        periodQuantity.value = +(parseFloat(periodQuantity.value) - 0.25).toFixed(2);
-        handleInput('#period-quantity', 'periodKeySpeed');
-    });
-    
+      quantityElement.addEventListener('input', function() {
+        handleInput(`#${quantityId}`, storageKey);
+      });
+    }
 
-
-
+    addQuantityHandlers('min-quantity', 'incrementMin', 'decrementMin', 'minSpeed', handleInput);
+    addQuantityHandlers('slow-quantity', 'incrementSlow', 'decrementSlow', 'slowSpeed', handleInput);
+    addQuantityHandlers('main-quantity', 'incrementMain', 'decrementMain', 'mainSpeed', handleInput);
+    addQuantityHandlers('fast-quantity', 'incrementFast', 'decrementFast', 'fastSpeed', handleInput);
+    addQuantityHandlers('max-quantity', 'incrementMax', 'decrementMax', 'maxSpeed', handleInput);
+    addQuantityHandlers('comma-quantity', 'incrementComma', 'decrementComma', 'commaKeySpeed', handleInput);
+    addQuantityHandlers('period-quantity', 'incrementPeriod', 'decrementPeriod', 'periodKeySpeed', handleInput);
 
 
     toggleSwitch.addEventListener('input', function() {
-      console.log("Switch state: ", this.checked);
       chrome.storage.sync.set({'extensionEnabled': this.checked}, function() {
-          console.log('Extension enabled state is set to ', this.checked);
       });
       runInit();
     });
 
     keysToggleSwitch.addEventListener('input', function() {
-      console.log("Switch state: ", this.checked);
       chrome.storage.sync.set({'hotkeysEnabled': this.checked}, function() {
-          console.log('Extension enabled state is set to ', this.checked);
       });
       runInit();
     });
-
 
     addedListeners = true;
   }

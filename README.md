@@ -3,6 +3,8 @@
 ![easyspeed-promo](https://github.com/dschil138/DragSpeed-For-YouTube/assets/11950317/1cc7a0bc-3bd9-41e7-ad57-d7365bc9e80e)
 <!-- ![easyspeed-promo-2](https://github.com/dschil138/DragSpeed-For-YouTube/assets/11950317/e398e41f-e708-4bc9-a3a4-e277184d1edb) -->
 
+#### Available in the [Chrome Store](https://chromewebstore.google.com/detail/easyspeed-for-youtube/lmcggcabhocpfkbddekmconplfjmmgmn)
+
 A Chrome extension that lets you click and drag anywhere on a Youtube video to adjust the playback speed.
 
 Click and hold for 2x. When the click is released, it will go back to regular playback. To play at faster speeds, like 3x or 10x, drag your click to the right. For slower speeds, drag to the left.

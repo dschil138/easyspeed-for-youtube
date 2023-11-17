@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "EasySpeed For YouTube",
-  "version": "2.6",
+  "version": "2.7",
   "description": "Click & drag on Youtube videos to adjust the playback speed.",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [

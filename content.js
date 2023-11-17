@@ -35,6 +35,13 @@ const tier1 = 50;
 const tier2 = 180;
 const tier3 = 330;
 const verticalTier = 60;
+let dynamicTier1 = tier1;
+let dynamicTier2 =  tier2;
+let dynamicTier3 =  tier3;
+let dynamicVerticalTier = verticalTier;
+
+
+
 
 const chromeControls = 'ytp-chrome-bottom';
 
@@ -95,14 +102,15 @@ document.addEventListener("DOMContentLoaded", function() {
 indicator = document.createElement('div');
 
 
-
-
-function addIndicator(rate) {
+function addIndicator(video, rate) {
   indicator.innerText = `${rate}x Speed${rate === 16 ? ' (max)' : ''}`;
   indicator.style.fontSize = '1.4em';
   indicator.style.fontWeight = 'normal';
   indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.45)';
   indicator.style.display = 'block';
+  let height = video.clientHeight
+  let offset = height/10;
+  indicator.style.top = `${offset}px`;
 }
 
 function findOriginalSpeed() {
@@ -155,15 +163,12 @@ function newSpeed(rate) {
 function init(videoElement) {
   syncSpeeds();
   if (!extensionEnabled) return;
-
   video = videoElement;
-
-  console.log('init');
-  console.log("extensionEnabled: ", extensionEnabled);
 
   // remove the original 2x speed overlay - we will be replacing it with our own overlay to avoid confusion
   const overlay = document.querySelector('.ytp-speedmaster-overlay.ytp-overlay');
   overlay?.remove();
+
   // remove pause overlay for embedded videos as it causes incosistent pausing behavior
   const pauseOverlay = document.querySelector('.ytp-pause-overlay');
   pauseOverlay?.remove();
@@ -196,10 +201,10 @@ function init(videoElement) {
           if (doubleTapAndHoldPeriod) {
             isPeriodKeyDown = true;
             video.playbackRate = Math.min(periodKeySpeed * 2, 16);
-            addIndicator(Math.min(periodKeySpeed * 2, 16));
+            addIndicator(video, Math.min(periodKeySpeed * 2, 16));
           } else {
             video.playbackRate = periodKeySpeed;
-            addIndicator(periodKeySpeed);
+            addIndicator(video, periodKeySpeed);
           }
 
         } else if (e.key === ',') {
@@ -213,10 +218,10 @@ function init(videoElement) {
           if (doubleTapAndHoldComma) {
             isCommaKeyDown = true;
             video.playbackRate = 0.75;
-            addIndicator(0.75);
+            addIndicator(video, 0.75);
           } else {
             video.playbackRate = commaKeySpeed;
-            addIndicator(commaKeySpeed);
+            addIndicator(video, commaKeySpeed);
           }
         }
       });
@@ -252,6 +257,7 @@ function init(videoElement) {
 // MOUSE DOWN HANDLER
 function mousedownHandler(moviePlayer, e) {
   if (!extensionEnabled) return;
+
   initialX = e.clientX;
   initialY = e.clientY;
   setPersistentSpeed = false;
@@ -264,9 +270,11 @@ function mousedownHandler(moviePlayer, e) {
         originalSpeed = await findOriginalSpeed();
       }
       video.playbackRate = mainSpeed;
-      addIndicator(mainSpeed);
+      addIndicator(video, mainSpeed);
       longPressFlag = true;
+
       moviePlayer.addEventListener('mousemove', handleMouseMove.bind(null, moviePlayer), true);
+
       setTimeout(() => {
         video.playbackRate = mainSpeed;
       },283);
@@ -278,9 +286,6 @@ function mousedownHandler(moviePlayer, e) {
 
 // MOUSE UP HANDLER
 function mouseupHandler(moviePlayer, e) {
-  if (!extensionEnabled) return;
-
-  moviePlayer.removeEventListener('mousemove', handleMouseMove, true);
   firstRewind = true;
 
   clearInterval(rewindInterval);
@@ -296,13 +301,12 @@ function mouseupHandler(moviePlayer, e) {
   } else {
     indicator.style.display = 'none';
   }
+
 }
 
 
 // CLICK HANDLER
 function clickHandler(moviePlayer, e) {
-  if (!extensionEnabled) return;
-
   clearInterval(rewindInterval);
   rewindInterval = null;
 
@@ -329,18 +333,30 @@ function clickHandler(moviePlayer, e) {
 
 // MOUSE MOVE HANDLER
 function handleMouseMove(moviePlayer, e) {
-  if (!extensionEnabled) return;
+  if (!extensionEnabled || !longPressFlag) return;
+  width = moviePlayer.clientWidth;
 
-  if (!longPressFlag) return;
+  if (width < 450) {
+    dynamicTier1 = tier1/1.8;
+    dynamicTier2 =  tier2/1.8;
+    dynamicTier3 =  tier3/1.8;
+    dynamicVerticalTier = verticalTier/1.8;
+  } else {
+    dynamicTier1 = tier1;
+    dynamicTier2 =  tier2;
+    dynamicTier3 =  tier3;
+    dynamicVerticalTier = verticalTier;
+  }
+
   const deltaX = e.clientX - initialX;
   const deltaY = e.clientY - initialY;
 
   // X Axis will set the speed
-  if (deltaX > tier2) {
+  if (deltaX > dynamicTier2) {
     newSpeed(maxSpeed);
-  } else if (deltaX > tier1 && deltaX < tier2) {
+  } else if (deltaX > dynamicTier1 && deltaX < dynamicTier2) {
     newSpeed(fastSpeed);
-  } else if (deltaX < -tier3) {
+  } else if (deltaX < -dynamicTier3) {
     indicator.innerText = `REWIND`;
     if (firstRewind) {
       firstRewind = false;
@@ -351,16 +367,16 @@ function handleMouseMove(moviePlayer, e) {
         simulateLeftArrowKeyPress();
       }, 800);
     }
-  } else if (deltaX < -tier2) {
+  } else if (deltaX < -dynamicTier2) {
     newSpeed(minSpeed);
-  } else if (deltaX < -tier1) {
+  } else if (deltaX < -dynamicTier1) {
     newSpeed(slowSpeed);
   } else {
     newSpeed(mainSpeed);
   }
 
   // Y Axis will decide if speed is persistent after releasing click
-  if (deltaY > verticalTier || deltaY < -verticalTier) {
+  if (deltaY > dynamicVerticalTier || deltaY < -dynamicVerticalTier) {
     setPersistentSpeed = true;
     newPersistentSpeed = video.playbackRate;
     indicator.style.fontWeight = 'bold';
