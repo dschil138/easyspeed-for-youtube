@@ -57,31 +57,31 @@ chrome.runtime.onMessage.addListener(
 
 function syncSpeeds() {
   chrome.storage.sync.get('minSpeed', function(data) {
-    minSpeed = data.minSpeed || 1.25;
+    minSpeed = data.minSpeed !== undefined ? data.minSpeed : 1.25;
   });
   chrome.storage.sync.get('slowSpeed', function(data) {
-    slowSpeed = data.slowSpeed || 1.5;
+    slowSpeed = data.slowSpeed !== undefined ? data.slowSpeed : 1.5;
   });
   chrome.storage.sync.get('mainSpeed', function(data) {
-    mainSpeed = data.mainSpeed || 1.5;
+    mainSpeed = data.mainSpeed !== undefined ? data.mainSpeed : 2;
   });
   chrome.storage.sync.get('fastSpeed', function(data) {
-    fastSpeed = data.fastSpeed || 3;
+    fastSpeed = data.fastSpeed !== undefined ? data.fastSpeed : 3;
   });
   chrome.storage.sync.get('maxSpeed', function(data) {
-    maxSpeed = data.maxSpeed || 5;
+    maxSpeed = data.maxSpeed !== undefined ? data.maxSpeed : 5;
   });
   chrome.storage.sync.get('periodKeySpeed', function(data) {
-    periodKeySpeed = data.periodKeySpeed || 5;
+    periodKeySpeed = data.periodKeySpeed !== undefined ? data.periodKeySpeed : 5;
   });
   chrome.storage.sync.get('commaKeySpeed', function(data) {
-    commaKeySpeed = data.commaKeySpeed || 2;
+    commaKeySpeed = data.commaKeySpeed !== undefined ? data.commaKeySpeed : 2;
   });
   chrome.storage.sync.get('extensionEnabled', function(data) {
-    extensionEnabled = data.extensionEnabled;
+    extensionEnabled = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
   });
   chrome.storage.sync.get('hotkeysEnabled', function(data) {
-    hotkeysEnabled = data.hotkeysEnabled;
+    hotkeysEnabled = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
   });
 }
 
@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
 indicator = document.createElement('div');
 
 
+
 function addIndicator(video, rate) {
   indicator.innerText = `${rate}x Speed${rate === 16 ? ' (max)' : ''}`;
   indicator.style.fontSize = '1.4em';
@@ -109,7 +110,7 @@ function addIndicator(video, rate) {
   indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.45)';
   indicator.style.display = 'block';
   let height = video.clientHeight
-  let offset = height/10;
+  let offset = height/12;
   indicator.style.top = `${offset}px`;
 }
 
@@ -163,6 +164,7 @@ function newSpeed(rate) {
 function init(videoElement) {
   syncSpeeds();
   if (!extensionEnabled) return;
+
   video = videoElement;
 
   // remove the original 2x speed overlay - we will be replacing it with our own overlay to avoid confusion
@@ -190,8 +192,8 @@ function init(videoElement) {
         if (!extensionEnabled || !hotkeysEnabled) return;
 
         if (e.key === '.') {
-          let currentTime = Date.now();
-          let timeDifference = currentTime - lastPeriodKeyReleaseTime;
+          let currentTimeStamp = Date.now();
+          let timeDifference = currentTimeStamp - lastPeriodKeyReleaseTime;
       
           if (timeDifference < 400) {
             doubleTapAndHoldPeriod = true;
@@ -208,8 +210,8 @@ function init(videoElement) {
           }
 
         } else if (e.key === ',') {
-          let currentTime = Date.now();
-          let timeDifference = currentTime - lastCommaKeyReleaseTime;
+          let currentTimeStamp = Date.now();
+          let timeDifference = currentTimeStamp - lastCommaKeyReleaseTime;
       
           if (timeDifference < 400) {
             doubleTapAndHoldComma = true;
@@ -276,6 +278,7 @@ function mousedownHandler(moviePlayer, e) {
       moviePlayer.addEventListener('mousemove', handleMouseMove.bind(null, moviePlayer), true);
 
       setTimeout(() => {
+
         video.playbackRate = mainSpeed;
       },283);
 
@@ -286,6 +289,7 @@ function mousedownHandler(moviePlayer, e) {
 
 // MOUSE UP HANDLER
 function mouseupHandler(moviePlayer, e) {
+
   firstRewind = true;
 
   clearInterval(rewindInterval);
@@ -307,6 +311,7 @@ function mouseupHandler(moviePlayer, e) {
 
 // CLICK HANDLER
 function clickHandler(moviePlayer, e) {
+
   clearInterval(rewindInterval);
   rewindInterval = null;
 
@@ -394,7 +399,17 @@ function handleMouseMove(moviePlayer, e) {
 setTimeout(() => {
   if (!extensionEnabled) return;
   const videoElement = document.querySelector('video');
+
   if (videoElement) {
-    init(videoElement);
+    let premiumLogos = document.querySelectorAll('[is-red-logo]');
+
+    if (premiumLogos.length > 0) {
+      init(videoElement);
+    } 
+    else {
+      setTimeout(() => {
+        init(videoElement);
+      }, 6000);
+    }
   }
 }, 400);

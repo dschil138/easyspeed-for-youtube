@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', function() {
   let addedListeners = false;
 
@@ -17,11 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const commaKeySpeed = data.commaKeySpeed || 2;
     const periodKeySpeed = data.periodKeySpeed || 5;
 
-    const minSpeed = data.minSpeed || 2;
-    const slowSpeed = data.slowSpeed || 5;
+    const minSpeed = data.minSpeed || 1.2;
+    const slowSpeed = data.slowSpeed || 1.5;
     const mainSpeed = data.mainSpeed || 2;
-    const fastSpeed = data.fastSpeed || 5;
-    const maxSpeed = data.maxSpeed || 2;
+    const fastSpeed = data.fastSpeed || 3;
+    const maxSpeed = data.maxSpeed || 5;
 
     document.querySelector('#period-quantity').value = periodKeySpeed;
     document.querySelector('#comma-quantity').value = commaKeySpeed;
@@ -38,13 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const toggleSwitch = document.getElementById('toggleSwitch');
   const keysToggleSwitch = document.getElementById('keysToggleSwitch');
 
-  chrome.storage.sync.get('extensionEnabled', function(data) {
+
+  chrome.storage.sync.get(['extensionEnabled', 'hotkeysEnabled'], function(data) {
     toggleSwitch.checked = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
-  });
-  chrome.storage.sync.get('hotkeysEnabled', function(data) {
     keysToggleSwitch.checked = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
   });
-
+  
 
 
 
