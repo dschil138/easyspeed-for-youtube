@@ -107,10 +107,10 @@ function addIndicator(video, rate) {
   indicator.innerText = `${rate}x Speed${rate === 16 ? ' (max)' : ''}`;
   indicator.style.fontSize = '1.4em';
   indicator.style.fontWeight = 'normal';
-  indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.45)';
+  indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
   indicator.style.display = 'block';
   let height = video.clientHeight
-  let offset = height/12;
+  let offset = height/30;
   indicator.style.top = `${offset}px`;
 }
 
@@ -389,7 +389,7 @@ function handleMouseMove(moviePlayer, e) {
   } else {
     setPersistentSpeed = false;
     indicator.style.fontWeight = 'normal';
-    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.45)';
+    indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
   }
 }
 
@@ -401,15 +401,6 @@ setTimeout(() => {
   const videoElement = document.querySelector('video');
 
   if (videoElement) {
-    let premiumLogos = document.querySelectorAll('[is-red-logo]');
-
-    if (premiumLogos.length > 0) {
-      init(videoElement);
-    } 
-    else {
-      setTimeout(() => {
-        init(videoElement);
-      }, 6000);
-    }
+    init(videoElement);
   }
 }, 400);
