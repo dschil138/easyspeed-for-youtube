@@ -1,50 +1,23 @@
-let video;
-let moviePlayer;
-let originalSpeed = 1;
-let longPressTimer;
-let longPressFlag = false;
+let video, moviePlayer;
+let longPressTimer, longPressFlag = false;
 let lastVideoElement = null;
-let indicator;
-let initialX;
-let initialY;
-let minSpeed = 1.25;
-let slowSpeed = 1.5;
-let mainSpeed = 2;
-let fastSpeed = 3;
-let maxSpeed = 5;
-let periodKeySpeed = 5;
-let commaKeySpeed = 2;
-let setPersistentSpeed = false;
-let newPersistentSpeed;
-let speedPersisting = false;
-let rewindInterval;
-let firstRewind = true;
-let periodPressed = false;
-let commaPressed = false;
+let indicator, initialX, initialY;
+let originalSpeed = 1, minSpeed = 1.25, slowSpeed = 1.5, mainSpeed = 2, fastSpeed = 3, maxSpeed = 5, periodKeySpeed = 5, commaKeySpeed = 2;
+let setPersistentSpeed = false, speedPersisting = false, newPersistentSpeed;
+let rewindInterval, firstRewind = true;
 let hotkeyOriginalSpeed = 1;
-let isPeriodKeyDown = false;
-let isCommaKeyDown = false;
-let keydownTimer;
-let lastPeriodKeyReleaseTime = 0;
-let lastCommaKeyReleaseTime = 0;
-let doubleTapAndHoldPeriod = false;
-let doubleTapAndHoldComma = false;
-let extensionEnabled = true;
-let hotkeysEnabled = true;
+let isPeriodKeyDown = false, isCommaKeyDown = false, periodPressed = false, commaPressed = false, doubleTapAndHoldPeriod = false, doubleTapAndHoldComma = false, keydownTimer, lastPeriodKeyReleaseTime = 0, lastCommaKeyReleaseTime = 0;
+let extensionEnabled = true, hotkeysEnabled = true;
 const tier1 = 50;
 const tier2 = 180;
 const tier3 = 330;
 const verticalTier = 60;
-let dynamicTier1 = tier1;
-let dynamicTier2 =  tier2;
-let dynamicTier3 =  tier3;
-let dynamicVerticalTier = verticalTier;
-
-
+let dynamicTier1 = tier1, dynamicTier2 = tier2, dynamicTier3 = tier3, dynamicVerticalTier = verticalTier;
+let isEmbeddedVideo = false;
+let url = '';
 
 
 const chromeControls = 'ytp-chrome-bottom';
-
 const overlayDiv = document.querySelector('.ytp-doubletap-ui-legacy');
 
 chrome.runtime.onMessage.addListener(
@@ -55,37 +28,30 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
+
 function syncSpeeds() {
-  chrome.storage.sync.get('minSpeed', function(data) {
+  return new Promise((resolve, reject) => {
+    console.log("syncing speeds - extensionEnabled:", extensionEnabled);
+    chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'mainSpeed', 'fastSpeed', 'maxSpeed', 'periodKeySpeed', 'commaKeySpeed', 'extensionEnabled', 'hotkeysEnabled'], function(data) {
     minSpeed = data.minSpeed !== undefined ? data.minSpeed : 1.25;
-  });
-  chrome.storage.sync.get('slowSpeed', function(data) {
     slowSpeed = data.slowSpeed !== undefined ? data.slowSpeed : 1.5;
-  });
-  chrome.storage.sync.get('mainSpeed', function(data) {
     mainSpeed = data.mainSpeed !== undefined ? data.mainSpeed : 2;
-  });
-  chrome.storage.sync.get('fastSpeed', function(data) {
     fastSpeed = data.fastSpeed !== undefined ? data.fastSpeed : 3;
-  });
-  chrome.storage.sync.get('maxSpeed', function(data) {
     maxSpeed = data.maxSpeed !== undefined ? data.maxSpeed : 5;
-  });
-  chrome.storage.sync.get('periodKeySpeed', function(data) {
     periodKeySpeed = data.periodKeySpeed !== undefined ? data.periodKeySpeed : 5;
-  });
-  chrome.storage.sync.get('commaKeySpeed', function(data) {
     commaKeySpeed = data.commaKeySpeed !== undefined ? data.commaKeySpeed : 2;
-  });
-  chrome.storage.sync.get('extensionEnabled', function(data) {
     extensionEnabled = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
-  });
-  chrome.storage.sync.get('hotkeysEnabled', function(data) {
     hotkeysEnabled = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
+    console.log("synced speeds done - extensionEnabled:", extensionEnabled);
+      resolve();
+    });
   });
 }
 
+
+
 document.addEventListener("DOMContentLoaded", function() {
+  console.log('DOMContentLoaded');
   let observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes) {
@@ -102,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
 indicator = document.createElement('div');
 
 
-
 function addIndicator(video, rate) {
   indicator.innerText = `${rate}x Speed${rate === 16 ? ' (max)' : ''}`;
   indicator.style.fontSize = '1.4em';
@@ -110,7 +75,14 @@ function addIndicator(video, rate) {
   indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
   indicator.style.display = 'block';
   let height = video.clientHeight
-  let offset = height/30;
+  let offset;
+  if (isEmbeddedVideo) {
+    console.log('is embedded');
+    offset = height/10;
+  } else {
+    console.log('not embedded');
+    offset = height/30
+  }
   indicator.style.top = `${offset}px`;
 }
 
@@ -161,9 +133,13 @@ function newSpeed(rate) {
 }
 
 
-function init(videoElement) {
-  syncSpeeds();
+async function init(videoElement) {
+  await syncSpeeds();
   if (!extensionEnabled) return;
+  url = window.location.href;
+  isEmbeddedVideo = url.includes('embed');
+  console.log('init isEmbeddedVideo:', isEmbeddedVideo);
+
 
   video = videoElement;
 
@@ -395,12 +371,11 @@ function handleMouseMove(moviePlayer, e) {
 
 
 
-// Give late scripts time to load
-setTimeout(() => {
-  if (!extensionEnabled) return;
+setTimeout(async () => {
+  await syncSpeeds();
   const videoElement = document.querySelector('video');
-
   if (videoElement) {
     init(videoElement);
   }
-}, 400);
+}, 200);
+
