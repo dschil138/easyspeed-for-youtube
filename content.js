@@ -31,7 +31,6 @@ chrome.runtime.onMessage.addListener(
 
 function syncSpeeds() {
   return new Promise((resolve, reject) => {
-    console.log("syncing speeds - extensionEnabled:", extensionEnabled);
     chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'mainSpeed', 'fastSpeed', 'maxSpeed', 'periodKeySpeed', 'commaKeySpeed', 'extensionEnabled', 'hotkeysEnabled'], function(data) {
     minSpeed = data.minSpeed !== undefined ? data.minSpeed : 1.25;
     slowSpeed = data.slowSpeed !== undefined ? data.slowSpeed : 1.5;
@@ -42,7 +41,6 @@ function syncSpeeds() {
     commaKeySpeed = data.commaKeySpeed !== undefined ? data.commaKeySpeed : 2;
     extensionEnabled = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
     hotkeysEnabled = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
-    console.log("synced speeds done - extensionEnabled:", extensionEnabled);
       resolve();
     });
   });
@@ -51,7 +49,6 @@ function syncSpeeds() {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-  console.log('DOMContentLoaded');
   let observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes) {
@@ -77,10 +74,8 @@ function addIndicator(video, rate) {
   let height = video.clientHeight
   let offset;
   if (isEmbeddedVideo) {
-    console.log('is embedded');
     offset = height/10;
   } else {
-    console.log('not embedded');
     offset = height/30
   }
   indicator.style.top = `${offset}px`;
@@ -138,8 +133,6 @@ async function init(videoElement) {
   if (!extensionEnabled) return;
   url = window.location.href;
   isEmbeddedVideo = url.includes('embed');
-  console.log('init isEmbeddedVideo:', isEmbeddedVideo);
-
 
   video = videoElement;
 
