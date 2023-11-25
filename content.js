@@ -32,23 +32,22 @@ chrome.runtime.onMessage.addListener(
 function syncSpeeds() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(['minSpeed', 'slowSpeed', 'mainSpeed', 'fastSpeed', 'maxSpeed', 'periodKeySpeed', 'commaKeySpeed', 'extensionEnabled', 'hotkeysEnabled'], function(data) {
-    minSpeed = data.minSpeed !== undefined ? data.minSpeed : 1.25;
-    slowSpeed = data.slowSpeed !== undefined ? data.slowSpeed : 1.5;
-    mainSpeed = data.mainSpeed !== undefined ? data.mainSpeed : 2;
-    fastSpeed = data.fastSpeed !== undefined ? data.fastSpeed : 3;
-    maxSpeed = data.maxSpeed !== undefined ? data.maxSpeed : 5;
-    periodKeySpeed = data.periodKeySpeed !== undefined ? data.periodKeySpeed : 5;
-    commaKeySpeed = data.commaKeySpeed !== undefined ? data.commaKeySpeed : 2;
-    extensionEnabled = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
-    hotkeysEnabled = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
+      minSpeed = data.minSpeed !== undefined ? data.minSpeed : 1.2;
+      slowSpeed = data.slowSpeed !== undefined ? data.slowSpeed : 1.5;
+      mainSpeed = data.mainSpeed !== undefined ? data.mainSpeed : 2;
+      fastSpeed = data.fastSpeed !== undefined ? data.fastSpeed : 3;
+      maxSpeed = data.maxSpeed !== undefined ? data.maxSpeed : 5;
+      periodKeySpeed = data.periodKeySpeed !== undefined ? data.periodKeySpeed : 5;
+      commaKeySpeed = data.commaKeySpeed !== undefined ? data.commaKeySpeed : 2;
+      extensionEnabled = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
+      hotkeysEnabled = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
       resolve();
     });
   });
 }
 
 
-
-document.addEventListener("DOMContentLoaded", function() {
+function onDomContentLoaded() {
   let observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes) {
@@ -61,9 +60,15 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
   observer.observe(document.body, { childList: true, subtree: true });
-});
-indicator = document.createElement('div');
+}
 
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', onDomContentLoaded);
+} else {
+  onDomContentLoaded();
+}
+
+indicator = document.createElement('div');
 
 function addIndicator(video, rate) {
   indicator.innerText = `${rate}x Speed${rate === 16 ? ' (max)' : ''}`;
@@ -71,12 +76,9 @@ function addIndicator(video, rate) {
   indicator.style.fontWeight = 'normal';
   indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.35)';
   indicator.style.display = 'block';
-  let height = video.clientHeight
-  let offset;
+  let offset = video.clientHeight/30
   if (isEmbeddedVideo) {
-    offset = height/10;
-  } else {
-    offset = height/30
+    offset = offset*3;
   }
   indicator.style.top = `${offset}px`;
 }
@@ -115,7 +117,7 @@ function simulateLeftArrowKeyPress() {
     bubbles: true,
     cancelable: true
   });
-video.dispatchEvent(upEvent);
+  video.dispatchEvent(upEvent);
 }
 
 
@@ -249,10 +251,10 @@ function mousedownHandler(moviePlayer, e) {
       setTimeout(() => {
 
         video.playbackRate = mainSpeed;
-      },283);
+      },223);
 
 
-    }, 220);
+    }, 280);
 }
 
 
@@ -364,11 +366,11 @@ function handleMouseMove(moviePlayer, e) {
 
 
 
-setTimeout(async () => {
-  await syncSpeeds();
+setTimeout(() => {
   const videoElement = document.querySelector('video');
   if (videoElement) {
     init(videoElement);
   }
-}, 200);
+}, 100);
+
 
