@@ -4,7 +4,8 @@ let lastVideoElement = null;
 let indicator, initialX, initialY;
 let originalSpeed = 1, minSpeed = 1.25, slowSpeed = 1.5, mainSpeed = 2, fastSpeed = 3, maxSpeed = 5, periodKeySpeed = 5, commaKeySpeed = 2;
 let setPersistentSpeed = false, speedPersisting = false, newPersistentSpeed;
-let rewindInterval, firstRewind = true;
+let firstRewind = true;
+let rewindInterval = null;
 let hotkeyOriginalSpeed = 1;
 let isPeriodKeyDown = false, isCommaKeyDown = false, periodPressed = false, commaPressed = false, doubleTapAndHoldPeriod = false, doubleTapAndHoldComma = false, keydownTimer, lastPeriodKeyReleaseTime = 0, lastCommaKeyReleaseTime = 0;
 let extensionEnabled = true, hotkeysEnabled = true;
@@ -15,9 +16,15 @@ const verticalTier = 60;
 let dynamicTier1 = tier1, dynamicTier2 = tier2, dynamicTier3 = tier3, dynamicVerticalTier = verticalTier;
 let isEmbeddedVideo = false;
 let url = '';
+let mouseIsDown = false;
 
 
 const chromeControls = 'ytp-chrome-bottom';
+const chromeControlsPadding = 'ytp-progress-bar-padding';
+const YTAd = 'ytp-ad-preview-container';
+const YTAdImage = 'ytp-ad-image';
+const YTAdSkip = 'ytp-ad-skip-button-container';
+
 const overlayDiv = document.querySelector('.ytp-doubletap-ui-legacy');
 
 chrome.runtime.onMessage.addListener(
@@ -27,6 +34,55 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
+// ytp-ad-preview-container
+
+
+// ytp-ad-player-overlay-skip-or-preview
+// ytp-ad-skip-ad-slot
+// #preskip-component:3
+// 
+// 
+// 
+// 
+// 
+// ytp-ad-player-overlay-instream-info
+// ytp-ad-simple-ad-badge
+// ytp-ad-text
+//  #simple-ad-badge:e
+// ytp-ad-duration-remaining
+// ytp-ad-text
+// #ad-text:g
+// ytp-ad-hover-text-button ytp-ad-info-hover-text-button
+// #ad-info-hover-text-button:h
+// ytp-ad-button ytp-ad-button-link ytp-ad-clickable
+// 
+// 
+// ytp-ad-preview-container ytp-ad-preview-container-detached modern-countdown-next-to-thumbnail
+// ytp-ad-text ytp-ad-preview-text-modern
+// #ad-text:4
+// ytp-ad-preview-image-modern
+// ytp-ad-image
+// #ad-image:5
+
+// 
+// ytp-ad-skip-button-slot
+// ytp-ad-skip-button-container ytp-ad-skip-button-container-detached
+// ytp-ad-skip-button-modern ytp-button
+// ytp-ad-text ytp-ad-skip-button-text-centered ytp-ad-skip-button-text
+// ytp-ad-skip-button-icon-modern
+
+// ytp-ad-player-overlay-progress-bar
+// ytp-ad-player-overlay-instream-user-sentiment
+// 
+// 
+
+// ytp-ad-skip-button-slot
+// #skip-button:6
+// ytp-ad-skip-button-container ytp-ad-skip-button-container-detached
+// ytp-ad-skip-button-modern ytp-button
+// ytp-ad-text ytp-ad-skip-button-text-centered ytp-ad-skip-button-text
+// ytp-ad-skip-button-icon-modern
+
 
 
 function syncSpeeds() {
@@ -153,11 +209,51 @@ async function init(videoElement) {
     indicator.classList.add('indicator');
     video.parentElement.appendChild(indicator);
     const moviePlayer = videoElement.closest('#movie_player');
+    // const videoContainer = videoElement.closest('#container');
+    // querySelector for element with the ID of "container"
+    // const videoContainer = document.querySelector('#container');
+
   
     if (moviePlayer) {
+// // if element with class 'ytp-ad-player-overlay-skip-or-preview' is on page, set video playback speed to 16x
+//       const adOverlay = document.querySelector('.ytp-ad-player-overlay-skip-or-preview');
+//       if (adOverlay) {
+//         console.log("was an ad overlay");
+//         video.playbackRate = 16;
+//         addIndicator(video, 16);
+//       } else {
+//         console.log("no ad overlay");
+//       }
+
+      const observer = new MutationObserver((mutationsList) => {
+        for (let mutation of mutationsList) {
+          if (mutation.type === 'childList') {
+            const adSkipButton = document.querySelector('.ytp-ad-skip-button-icon-modern');
+            if (adSkipButton) {
+              setTimeout(() => {
+                adSkipButton.click();
+              },1400);
+              setTimeout(() => {
+                video.playbackRate = 1;
+                indicator.style.display = 'none';
+                console.log("clicked skip");
+              }, 50);
+            }
+          }
+        }
+      });
+      
+      observer.observe(document.body, { childList: true, subtree: true });
+      
+
+      
+
       moviePlayer.addEventListener('mousedown', mousedownHandler.bind(null, moviePlayer), true);
       moviePlayer.addEventListener('mouseup', mouseupHandler.bind(null, moviePlayer), true);
       moviePlayer.addEventListener('click', clickHandler.bind(null, moviePlayer), true);
+      moviePlayer.addEventListener('mousemove', handleMouseMove.bind(null, moviePlayer), true);
+      moviePlayer.addEventListener('mouseleave', handleMouseLeave.bind(null, moviePlayer));
+      console.log("add mouseleave to: ", moviePlayer);
 
       moviePlayer.addEventListener('keydown', function (e) {
         if (!extensionEnabled || !hotkeysEnabled) return;
@@ -230,13 +326,19 @@ async function init(videoElement) {
 // MOUSE DOWN HANDLER
 function mousedownHandler(moviePlayer, e) {
   if (!extensionEnabled) return;
+  mouseIsDown = true;
 
   initialX = e.clientX;
   initialY = e.clientY;
   setPersistentSpeed = false;
 
   const elements = document.elementsFromPoint(e.clientX, e.clientY);
-  if (elements.some(el => el.classList.contains(chromeControls))) { return; }
+
+  // we don't want to trigger the extension if the user is just using the controls at the bottom of the video
+  if (elements.some(el => el.classList.contains(chromeControls)) || elements.some(el => el.classList.contains(chromeControlsPadding)) || elements.some(el => el.classList.contains(YTAd)) || elements.some(el => el.classList.contains(YTAdSkip))) { 
+    console.log("mousedown return early element");
+    return; 
+  }
     
     longPressTimer = setTimeout(async () => {
       if (!speedPersisting) {
@@ -246,26 +348,25 @@ function mousedownHandler(moviePlayer, e) {
       addIndicator(video, mainSpeed);
       longPressFlag = true;
 
-      moviePlayer.addEventListener('mousemove', handleMouseMove.bind(null, moviePlayer), true);
+      
+
 
       setTimeout(() => {
-
-        video.playbackRate = mainSpeed;
-      },223);
-
-
-    }, 280);
+        if (mouseIsDown) {
+          video.playbackRate = mainSpeed;
+        }
+      },183);
+    }, 320);
 }
 
 
 // MOUSE UP HANDLER
 function mouseupHandler(moviePlayer, e) {
-
+  mouseIsDown = false;
+  clearTimeout(longPressTimer);
   firstRewind = true;
-
   clearInterval(rewindInterval);
   rewindInterval = null;
-  clearTimeout(longPressTimer);
   deltax = 0;
   deltay = 0;
 
@@ -277,12 +378,17 @@ function mouseupHandler(moviePlayer, e) {
     indicator.style.display = 'none';
   }
 
+  setTimeout(() => {
+    longPressFlag = false;
+  }, 100);
 }
 
 
 // CLICK HANDLER
 function clickHandler(moviePlayer, e) {
-
+  if (!extensionEnabled) return;
+  mouseIsDown = false;
+  clearTimeout(longPressTimer);
   clearInterval(rewindInterval);
   rewindInterval = null;
 
@@ -306,12 +412,50 @@ function clickHandler(moviePlayer, e) {
   }
 }
 
+function handleMouseLeave(moviePlayer, e) {
+  // get elements at mouse position
+  const elements = document.elementsFromPoint(e.clientX, e.clientY);
+  // if #movie_player is one of them, return early
+  if (elements.some(el => el.id === 'movie_player')){
+    console.log("returning bc mouse is over movie player");
+    return;
+  } else {
+    console.log("left Movie Player");
+    indicator.style.display = 'none';
+    mouseIsDown = false;
+    clearInterval(rewindInterval);
+    clearTimeout(longPressTimer);
+    rewindInterval = null;
+    firstRewind = true;
+    if (longPressFlag) {
+
+      if (speedPersisting && !setPersistentSpeed) {
+        video.playbackRate = originalSpeed;
+        speedPersisting = false;
+
+      } else if (setPersistentSpeed) {
+        video.playbackRate = newPersistentSpeed;
+        speedPersisting = true;
+      } else {
+        video.playbackRate = originalSpeed;
+        speedPersisting = false;
+      }
+
+      longPressFlag = false;
+    }
+  }
+
+}
+
 
 // MOUSE MOVE HANDLER
 function handleMouseMove(moviePlayer, e) {
   if (!extensionEnabled || !longPressFlag) return;
-  width = moviePlayer.clientWidth;
 
+
+
+  // make it a bit easier to work with smaller videos
+  width = moviePlayer.clientWidth;
   if (width < 450) {
     dynamicTier1 = tier1/1.8;
     dynamicTier2 =  tier2/1.8;
