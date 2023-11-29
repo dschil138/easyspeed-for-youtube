@@ -232,7 +232,7 @@ async function init(videoElement) {
             if (adSkipButton) {
               setTimeout(() => {
                 adSkipButton.click();
-              },1400);
+              },400);
               setTimeout(() => {
                 video.playbackRate = 1;
                 indicator.style.display = 'none';
