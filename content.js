@@ -1,7 +1,6 @@
 
 let lastVideoElement = null;
 let indicator, initialX, initialY;
-
 const isDebugMode = false;
 
 
@@ -12,8 +11,6 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
-
-
 
 
 function syncSpeeds() {
@@ -49,6 +46,7 @@ function onDomContentLoaded() {
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', onDomContentLoaded);
 } else {
@@ -56,7 +54,6 @@ if (document.readyState === 'loading') {
 }
 
 indicator = document.createElement('div');
-
 
 
 
@@ -85,10 +82,6 @@ async function init(videoElement) {
     const moviePlayer = videoElement.closest('#movie_player');
 
     if (moviePlayer) {
-
-      overlayObserver.observe(document.body, { childList: true, subtree: true });
-      buttonObserver.observe(document.body, { childList: true, subtree: true });
-
       moviePlayer.addEventListener('mousedown', mousedownHandler.bind(null, moviePlayer), true);
       moviePlayer.addEventListener('mouseup', mouseupHandler.bind(null, moviePlayer), true);
       moviePlayer.addEventListener('click', clickHandler.bind(null, moviePlayer), true);
@@ -97,13 +90,9 @@ async function init(videoElement) {
 
       moviePlayer.addEventListener('keydown', keydownHandler);
       moviePlayer.addEventListener('keyup', keyupHandler);
-
-
     }
   }
-} // End init
-
-
+}
 
 
 

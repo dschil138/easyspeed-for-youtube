@@ -68,7 +68,6 @@ function keyupHandler(e) {
 
 
 
-
 // MOUSE DOWN HANDLER
 function mousedownHandler(moviePlayer, e) {
     if (!extensionEnabled) return;
@@ -93,9 +92,6 @@ function mousedownHandler(moviePlayer, e) {
         video.playbackRate = mainSpeed;
         addIndicator(video, mainSpeed);
         longPressFlag = true;
-
-
-
 
         setTimeout(() => {
             if (mouseIsDown) {
@@ -158,6 +154,7 @@ function clickHandler(moviePlayer, e) {
     }
 }
 
+
 function handleMouseLeave(moviePlayer, e) {
     // get elements at mouse position
     const elements = document.elementsFromPoint(e.clientX, e.clientY);
@@ -190,15 +187,12 @@ function handleMouseLeave(moviePlayer, e) {
             longPressFlag = false;
         }
     }
-
 }
 
 
 // MOUSE MOVE HANDLER
 function handleMouseMove(moviePlayer, e) {
     if (!extensionEnabled || !longPressFlag) return;
-
-
 
     // make it a bit easier to work with smaller videos
     width = moviePlayer.clientWidth;
