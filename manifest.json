@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Easy Speed Drag YouTube",
-  "version": "3.2",
+  "version": "3.3",
   "description": "Click & drag left or right on Youtube videos to adjust the playback speed.",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*", "*://www.youtube-nocookie.com/*"],
       "css": ["styles.css"],
-      "js": ["content.js"],
+      "js": ["content.js", "handlers.js", "observers.js", "utils.js"],
       "all_frames": true,
       "run_at": "document_idle"
     }
