@@ -94,9 +94,6 @@ function mousedownHandler(moviePlayer, e) {
         addIndicator(video, mainSpeed);
         longPressFlag = true;
 
-
-
-
         setTimeout(() => {
             if (mouseIsDown) {
                 video.playbackRate = mainSpeed;
