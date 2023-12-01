@@ -2,7 +2,7 @@
 let lastVideoElement = null;
 let indicator, initialX, initialY;
 
-const isDebugMode = false;
+const isDebugMode = true;
 
 
 // if (window.location.hostname.includes("youtube.com")) {
@@ -40,7 +40,7 @@ if (window.location.hostname.includes("youtube.com")) {
       }
 
       // Inject the HTML for the popup
-      var popupHTML = '<div id="popup-container"><div id="popup-content"><div style="font-size: 12px; padding-bottom: 0.2em; margin-bottom: 0.2em;">New Feature:</div><h1>Auto-Skip Ads</h1><p>Auto fast-forward through ads, and auto-click the "Skip" button with <b>Easy Speed Drag</b>\'s new <b>Auto-Skip</b> feature.</p><p>Use the toggle switch below to enable, or change any time in the extension settings.</p> <div class="switch-container"><label for="adSkipToggleSwitch">Auto-Skip Ads:</label><label class="switch"><input type="checkbox" id="adSkipToggleSwitch"><span class="slider round"></span></label></div><button id="close-btn">Done</button></div></div>';
+      var popupHTML = '<div id="popup-container"><div id="popup-content"><div style="font-size: 12px; padding-bottom: 0.2em; margin-bottom: 0.2em;">New Feature:</div><h1>Auto-Skip Ads</h1><p>Auto fast-forward through ads, and auto-click the "Skip" button with <b>Easy Speed Drag</b>\'s new <b>Auto-Skip</b> feature.</p><p>Use the toggle switch below to enable, or change at any time in the extension settings.</p> <div class="switch-container"><label for="adSkipToggleSwitch">Auto-Skip Ads:</label><label class="switch"><input type="checkbox" id="adSkipToggleSwitch"><span class="slider round"></span></label></div><button id="close-btn">Done</button></div></div>';
       document.body.insertAdjacentHTML('beforeend', popupHTML);
 
       var closeButton = document.getElementById('close-btn');
@@ -48,7 +48,7 @@ if (window.location.hostname.includes("youtube.com")) {
       const adSkipToggleSwitch = document.getElementById('adSkipToggleSwitch');
   
       chrome.storage.sync.get(['adSkipEnabled'], function (data) {
-          adSkipToggleSwitch.checked = data.adSkipEnabled !== undefined ? data.adSkipEnabled : true;
+          adSkipToggleSwitch.checked = data.adSkipEnabled !== undefined ? data.adSkipEnabled : false;
       });
   
       adSkipToggleSwitch.addEventListener('input', function () {
@@ -173,7 +173,7 @@ async function init(videoElement) {
 
     indicator.classList.add('indicator');
     video.parentElement.appendChild(indicator);
-    const moviePlayer = videoElement.closest('#movie_player');
+    const moviePlayer = document.querySelector('#movie_player');
 
     if (moviePlayer) {
 

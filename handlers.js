@@ -2,7 +2,7 @@
 let hotkeyOriginalSpeed = 1;
 let isPeriodKeyDown = false, isCommaKeyDown = false, periodPressed = false, commaPressed = false, doubleTapAndHoldPeriod = false, doubleTapAndHoldComma = false, keydownTimer, lastPeriodKeyReleaseTime = 0, lastCommaKeyReleaseTime = 0;
 
-
+// ytp-settings-menu
 
 function keydownHandler(e) {
     if (!extensionEnabled || !hotkeysEnabled) return;
@@ -73,6 +73,7 @@ function keyupHandler(e) {
 function mousedownHandler(moviePlayer, e) {
     if (!extensionEnabled) return;
     mouseIsDown = true;
+    log("mouse down");
 
     initialX = e.clientX;
     initialY = e.clientY;
@@ -80,11 +81,37 @@ function mousedownHandler(moviePlayer, e) {
 
     const elements = document.elementsFromPoint(e.clientX, e.clientY);
 
-    // we don't want to trigger the extension if the user is just using the controls at the bottom of the video
-    if (elements.some(el => el.classList.contains(chromeControls)) || elements.some(el => el.classList.contains(chromeControlsPadding)) || elements.some(el => el.classList.contains(YTAd)) || elements.some(el => el.classList.contains(YTAdSkip))) {
+    // // we don't want to trigger the extension if the user is just using the controls at the bottom of the video
+    // if (elements.some(el => el.classList.contains(chromeControls)) || elements.some(el => el.classList.contains(chromeControlsPadding)) || elements.some(el => el.classList.contains(YTAd)) || elements.some(el => el.classList.contains(YTAdSkip)) || elements.some(el => el.classList.contains(YTSettings)) || elements.some(el => el.classList.contains(YTAdSuggestion)) || elements.some(el => el.classList.contains(YTInfoButton))) {
+    //     log("mousedown return early element");
+    //     return;
+    // }
+
+    // if (elements.some(el => el.classList.contains(YTSettings))) {
+    //     const style = window.getComputedStyle(el);
+    //     if (style.display !== 'none') {
+    //         log("mousedown return early bc settings");
+    //         return;
+    //     }
+    // };
+    // const chromeControls = 'ytp-chrome-bottom';
+    // const chromeControlsPadding = 'ytp-progress-bar-padding';
+    // const YTAd = 'ytp-ad-preview-container';
+    // const YTAdImage = 'ytp-ad-image';
+    // const YTAdSkip = 'ytp-ad-skip-button-container';
+    // const YTSettings = 'ytp-settings-menu';
+    // const YTSuggestion = 'ytp-suggested-action-badge';
+    // const YTInfoButton = 'ytp-cards-button-icon';
+    // // ytp-paid-content-overlay-icon
+    // const YTPaidContent = 'ytp-paid-content-overlay-icon';
+
+    const classList = ['ytp-chrome-bottom', 'ytp-progress-bar-padding', 'ytp-ad-preview-container', 'ytp-ad-image', 'ytp-ad-skip-button-container', 'ytp-settings-menu', 'ytp-suggested-action-badge', 'ytp-cards-button-icon', 'ytp-paid-content-overlay'];
+
+    if (elements.some(el => classList.some(cls => el.classList.contains(cls)))) {
         log("mousedown return early element");
         return;
     }
+
 
     longPressTimer = setTimeout(async () => {
         if (!speedPersisting) {

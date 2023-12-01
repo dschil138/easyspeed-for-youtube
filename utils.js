@@ -21,6 +21,10 @@ const chromeControlsPadding = 'ytp-progress-bar-padding';
 const YTAd = 'ytp-ad-preview-container';
 const YTAdImage = 'ytp-ad-image';
 const YTAdSkip = 'ytp-ad-skip-button-container';
+const YTSettings = 'ytp-settings-menu';
+const YTSuggestion = 'ytp-suggested-action-badge';
+const YTInfoButton = 'ytp-cards-button-icon';
+const YTPaidContent = 'ytp-paid-content-overlay';
 
 const overlayDiv = document.querySelector('.ytp-doubletap-ui-legacy');
 

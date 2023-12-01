@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
   chrome.storage.sync.get(['extensionEnabled', 'hotkeysEnabled',  'adSkipEnabled'], function(data) {
     toggleSwitch.checked = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
     keysToggleSwitch.checked = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
-    // adSkipToggleSwitch.checked = data.adSkipEnabled !== undefined ? data.adSkipEnabled : true;
+    adSkipToggleSwitch.checked = data.adSkipEnabled !== undefined ? data.adSkipEnabled : true;
   });
   
 
@@ -91,7 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
       runInit();
     });
 
-    
+    adSkipToggleSwitch.addEventListener('input', function() {
+      chrome.storage.sync.set({'adSkipEnabled': this.checked}, function() {
+      });
+      runInit();
+    });
 
     addedListeners = true;
   }
