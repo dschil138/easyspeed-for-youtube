@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
   let addedListeners = false;
+  // const isDebugMode = true;
 
+
+  // function log(...args) {
+  //   if (isDebugMode) {
+  //       console.log(...args);
+  //   }
+  // }
 
   function handleInput(inputId, storageKey) {
     const inputElement = document.querySelector(inputId);
@@ -104,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // function to send message to re-run init function in content.js
   function runInit() {
-    console.log("runInit from popup");
+    // log("runInit from popup");
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {action: "runInit"});
     });

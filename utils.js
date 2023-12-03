@@ -14,6 +14,7 @@ let dynamicTier1 = tier1, dynamicTier2 = tier2, dynamicTier3 = tier3, dynamicVer
 let isEmbeddedVideo = false;
 let url = '';
 let mouseIsDown = false;
+const isDebugMode = false;
 
 
 const chromeControls = 'ytp-chrome-bottom';
@@ -88,6 +89,60 @@ function simulateLeftArrowKeyPress() {
         code: 'ArrowLeft',
         keyCode: leftArrowKeyCode,
         which: leftArrowKeyCode,
+        bubbles: true,
+        cancelable: true
+    });
+    video.dispatchEvent(upEvent);
+}
+
+function simulateCommaKeyPress() {
+    if (!extensionEnabled) return;
+
+    video.focus();
+    const commaKeyCode = 188;
+
+    const downEvent = new KeyboardEvent('keydown', {
+        key: ',',
+        code: 'Comma',
+        keyCode: commaKeyCode,
+        which: commaKeyCode,
+        bubbles: true,
+        cancelable: true
+    });
+    video.dispatchEvent(downEvent);
+
+    const upEvent = new KeyboardEvent('keyup', {
+        key: ',',
+        code: 'Comma',
+        keyCode: commaKeyCode,
+        which: commaKeyCode,
+        bubbles: true,
+        cancelable: true
+    });
+    video.dispatchEvent(upEvent);
+}
+
+function simulateSpaceKeyPress() {
+    if (!extensionEnabled) return;
+
+    video.focus();
+    const spaceKeyCode = 32;
+
+    const downEvent = new KeyboardEvent('keydown', {
+        key: ' ',
+        code: 'Space',
+        keyCode: spaceKeyCode,
+        which: spaceKeyCode,
+        bubbles: true,
+        cancelable: true
+    });
+    video.dispatchEvent(downEvent);
+
+    const upEvent = new KeyboardEvent('keyup', {
+        key: ' ',
+        code: 'Space',
+        keyCode: spaceKeyCode,
+        which: spaceKeyCode,
         bubbles: true,
         cancelable: true
     });
