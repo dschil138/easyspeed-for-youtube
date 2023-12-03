@@ -1,8 +1,9 @@
 
 let hotkeyOriginalSpeed = 1;
 let isPeriodKeyDown = false, isCommaKeyDown = false, periodPressed = false, commaPressed = false, doubleTapAndHoldPeriod = false, doubleTapAndHoldComma = false, keydownTimer, lastPeriodKeyReleaseTime = 0, lastCommaKeyReleaseTime = 0;
+let tempPause = false;
 
-
+// ytp-settings-menu
 
 function keydownHandler(e) {
     if (!extensionEnabled || !hotkeysEnabled) return;
@@ -71,7 +72,10 @@ function keyupHandler(e) {
 // MOUSE DOWN HANDLER
 function mousedownHandler(moviePlayer, e) {
     if (!extensionEnabled) return;
+    if (longPressTimer) clearTimeout(longPressTimer);
+    longPressFlag = false;
     mouseIsDown = true;
+    log("mouse down");
 
     initialX = e.clientX;
     initialY = e.clientY;
@@ -79,11 +83,13 @@ function mousedownHandler(moviePlayer, e) {
 
     const elements = document.elementsFromPoint(e.clientX, e.clientY);
 
-    // we don't want to trigger the extension if the user is just using the controls at the bottom of the video
-    if (elements.some(el => el.classList.contains(chromeControls)) || elements.some(el => el.classList.contains(chromeControlsPadding)) || elements.some(el => el.classList.contains(YTAd)) || elements.some(el => el.classList.contains(YTAdSkip))) {
+    const classList = ['ytp-chrome-bottom', 'ytp-progress-bar-padding', 'ytp-ad-preview-container', 'ytp-ad-image', 'ytp-ad-skip-button-container', 'ytp-settings-menu', 'ytp-suggested-action-badge', 'ytp-cards-button-icon', 'ytp-paid-content-overlay'];
+
+    if (elements.some(el => classList.some(cls => el.classList.contains(cls)))) {
         log("mousedown return early element");
         return;
     }
+
 
     longPressTimer = setTimeout(async () => {
         if (!speedPersisting) {
@@ -104,7 +110,12 @@ function mousedownHandler(moviePlayer, e) {
 
 // MOUSE UP HANDLER
 function mouseupHandler(moviePlayer, e) {
+
     mouseIsDown = false;
+    if (tempPause) {
+        simulateSpaceKeyPress();
+        tempPause = false;
+    }
     clearTimeout(longPressTimer);
     firstRewind = true;
     clearInterval(rewindInterval);
@@ -135,6 +146,7 @@ function clickHandler(moviePlayer, e) {
     rewindInterval = null;
 
     if (longPressFlag) {
+        longPressFlag = false;
 
         if (speedPersisting && !setPersistentSpeed) {
             video.playbackRate = originalSpeed;
@@ -148,7 +160,6 @@ function clickHandler(moviePlayer, e) {
             speedPersisting = false;
         }
 
-        longPressFlag = false;
         e.stopPropagation();
         e.preventDefault();
     }
@@ -220,12 +231,12 @@ function handleMouseMove(moviePlayer, e) {
         indicator.innerText = `REWIND`;
         if (firstRewind) {
             firstRewind = false;
-            simulateLeftArrowKeyPress();
+            simulateLeftArrowKeyPress()
         }
         if (!rewindInterval) {
             rewindInterval = setInterval(() => {
-                simulateLeftArrowKeyPress();
-            }, 800);
+                simulateLeftArrowKeyPress()
+            }, 500);
         }
     } else if (deltaX < -dynamicTier2) {
         newSpeed(minSpeed);

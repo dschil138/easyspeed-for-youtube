@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
   let addedListeners = false;
+  // const isDebugMode = true;
 
+
+  // function log(...args) {
+  //   if (isDebugMode) {
+  //       console.log(...args);
+  //   }
+  // }
 
   function handleInput(inputId, storageKey) {
     const inputElement = document.querySelector(inputId);
@@ -35,11 +42,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const toggleSwitch = document.getElementById('toggleSwitch');
   const keysToggleSwitch = document.getElementById('keysToggleSwitch');
+  // const adSkipToggleSwitch = document.getElementById('adSkipToggleSwitch');
 
 
-  chrome.storage.sync.get(['extensionEnabled', 'hotkeysEnabled'], function(data) {
+  chrome.storage.sync.get(['extensionEnabled', 'hotkeysEnabled',  'adSkipEnabled'], function(data) {
     toggleSwitch.checked = data.extensionEnabled !== undefined ? data.extensionEnabled : true;
     keysToggleSwitch.checked = data.hotkeysEnabled !== undefined ? data.hotkeysEnabled : true;
+    adSkipToggleSwitch.checked = data.adSkipEnabled !== undefined ? data.adSkipEnabled : true;
   });
   
 
@@ -89,17 +98,24 @@ document.addEventListener('DOMContentLoaded', function() {
       runInit();
     });
 
+    adSkipToggleSwitch.addEventListener('input', function() {
+      chrome.storage.sync.set({'adSkipEnabled': this.checked}, function() {
+      });
+      runInit();
+    });
+
     addedListeners = true;
   }
 
 
 
-// function to send message to re-run init function in content.js
-function runInit() {
-chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  chrome.tabs.sendMessage(tabs[0].id, {action: "runInit"});
-});
-}
+  // function to send message to re-run init function in content.js
+  function runInit() {
+    // log("runInit from popup");
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {action: "runInit"});
+    });
+  }
 
 
 

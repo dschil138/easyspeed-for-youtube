@@ -14,6 +14,7 @@ let dynamicTier1 = tier1, dynamicTier2 = tier2, dynamicTier3 = tier3, dynamicVer
 let isEmbeddedVideo = false;
 let url = '';
 let mouseIsDown = false;
+const isDebugMode = false;
 
 
 const chromeControls = 'ytp-chrome-bottom';
@@ -21,6 +22,10 @@ const chromeControlsPadding = 'ytp-progress-bar-padding';
 const YTAd = 'ytp-ad-preview-container';
 const YTAdImage = 'ytp-ad-image';
 const YTAdSkip = 'ytp-ad-skip-button-container';
+const YTSettings = 'ytp-settings-menu';
+const YTSuggestion = 'ytp-suggested-action-badge';
+const YTInfoButton = 'ytp-cards-button-icon';
+const YTPaidContent = 'ytp-paid-content-overlay';
 
 const overlayDiv = document.querySelector('.ytp-doubletap-ui-legacy');
 
@@ -84,6 +89,60 @@ function simulateLeftArrowKeyPress() {
         code: 'ArrowLeft',
         keyCode: leftArrowKeyCode,
         which: leftArrowKeyCode,
+        bubbles: true,
+        cancelable: true
+    });
+    video.dispatchEvent(upEvent);
+}
+
+function simulateCommaKeyPress() {
+    if (!extensionEnabled) return;
+
+    video.focus();
+    const commaKeyCode = 188;
+
+    const downEvent = new KeyboardEvent('keydown', {
+        key: ',',
+        code: 'Comma',
+        keyCode: commaKeyCode,
+        which: commaKeyCode,
+        bubbles: true,
+        cancelable: true
+    });
+    video.dispatchEvent(downEvent);
+
+    const upEvent = new KeyboardEvent('keyup', {
+        key: ',',
+        code: 'Comma',
+        keyCode: commaKeyCode,
+        which: commaKeyCode,
+        bubbles: true,
+        cancelable: true
+    });
+    video.dispatchEvent(upEvent);
+}
+
+function simulateSpaceKeyPress() {
+    if (!extensionEnabled) return;
+
+    video.focus();
+    const spaceKeyCode = 32;
+
+    const downEvent = new KeyboardEvent('keydown', {
+        key: ' ',
+        code: 'Space',
+        keyCode: spaceKeyCode,
+        which: spaceKeyCode,
+        bubbles: true,
+        cancelable: true
+    });
+    video.dispatchEvent(downEvent);
+
+    const upEvent = new KeyboardEvent('keyup', {
+        key: ' ',
+        code: 'Space',
+        keyCode: spaceKeyCode,
+        which: spaceKeyCode,
         bubbles: true,
         cancelable: true
     });
